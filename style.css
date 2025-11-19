@@ -1,0 +1,49 @@
+/* --- EDITOR MODAL CORREGIDO --- */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.editor-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 95%; /* Un poco más ancho en móviles */
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 90vh; /* Altura máxima del 90% de la pantalla */
+    overflow-y: auto; /* Scroll si la pantalla es muy pequeña */
+}
+
+/* AQUÍ ESTÁ LA SOLUCIÓN DEL CUADRADO */
+.canvas-wrapper {
+    width: 100%;
+    max-width: 300px; /* Ancho máximo */
+    aspect-ratio: 1 / 1; /* OBLIGA A SER CUADRADO PERFECTO */
+    height: auto; /* La altura se calcula automática según el ancho */
+    margin: 0 auto;
+    border: 2px solid #333;
+    overflow: hidden;
+    position: relative;
+    background: #ccc;
+    cursor: move;
+    flex-shrink: 0; /* IMPORTANTE: Evita que se aplaste si falta espacio */
+}
+
+/* Aseguramos que el canvas interno llene el contenedor cuadrado */
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Resto de estilos se mantienen igual... */
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+label { font-size: 0.9rem; font-weight: bold; display: block; margin-bottom: 5px; }
