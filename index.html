@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diseña tus Imanes | Estudio Creativo</title>
 
-    <!-- Google Fonts: Inter (Moderna y Legible) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FUENTES DE GOOGLE AGREGADAS AQUI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
 
     <!-- SDK DE EMAILJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
         :root {
-            /* Paleta de Colores Moderna */
-            --primary: #4F46E5; /* Indigo moderno */
+            --primary: #4F46E5;
             --primary-hover: #4338ca;
-            --secondary: #10B981; /* Emerald para éxito/WhatsApp */
+            --secondary: #10B981;
             --bg-body: #F3F4F6;
             --surface: #ffffff;
             --text-main: #1F2937;
@@ -46,267 +47,87 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
-        h2, h3 { color: #111827; margin-top: 0; font-weight: 700; letter-spacing: -0.025em; }
-        h2 { text-align: center; font-size: 1.8rem; margin-bottom: 30px; }
+        h2 { text-align: center; font-size: 1.8rem; margin-bottom: 30px; color: #111827; font-weight: 700; }
+        h3 { color: #111827; margin-top: 0; font-weight: 700; }
 
-        /* --- STEPPER MODERNO --- */
-        .stepper-wrapper {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 50px;
-            position: relative;
-        }
-        .stepper-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 20px; left: 0; width: 100%; height: 4px;
-            background: #E5E7EB;
-            z-index: 0;
-            border-radius: 10px;
-        }
-        .stepper-item {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            background: var(--surface);
-            padding: 0 15px;
-        }
-        .step-counter {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: #fff;
-            border: 3px solid #E5E7EB;
-            color: #9CA3AF;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 8px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-        }
+        /* --- STEPPER --- */
+        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 50px; position: relative; }
+        .stepper-wrapper::before { content: ''; position: absolute; top: 20px; left: 0; width: 100%; height: 4px; background: #E5E7EB; z-index: 0; border-radius: 10px; }
+        .stepper-item { position: relative; z-index: 1; text-align: center; background: var(--surface); padding: 0 15px; }
+        .step-counter { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 3px solid #E5E7EB; color: #9CA3AF; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; transition: all 0.3s ease; }
         .step-name { font-size: 0.85rem; font-weight: 600; color: #9CA3AF; transition: color 0.3s; }
-
-        /* Estados del Stepper */
-        .stepper-item.active .step-counter {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
-        }
+        .stepper-item.active .step-counter { border-color: var(--primary); background: var(--primary); color: white; transform: scale(1.1); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2); }
         .stepper-item.active .step-name { color: var(--primary); }
+        .stepper-item.completed .step-counter { background: var(--secondary); border-color: var(--secondary); color: white; }
 
-        .stepper-item.completed .step-counter {
-            background: var(--secondary);
-            border-color: var(--secondary);
-            color: white;
-        }
-
-        /* --- ANIMACIONES --- */
         .step-section { display: none; animation: slideUp 0.4s ease-out; }
         .step-section.active { display: block; }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- GRID DE IMÁGENES --- */
-        .alert {
-            background: #EFF6FF;
-            border-left: 4px solid var(--primary);
-            color: #1E40AF;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
-        }
-
-        .grid-imanes {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .iman-slot {
-            aspect-ratio: 1 / 1;
-            background: #F9FAFB;
-            border: 2px dashed #D1D5DB;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            overflow: hidden;
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .iman-slot:hover {
-            border-color: var(--primary);
-            background: #EEF2FF;
-            transform: translateY(-4px);
-        }
-
-        .iman-slot.filled {
-            border: none;
-            background: white;
-            box-shadow: var(--shadow);
-        }
-
+        /* --- GRID --- */
+        .alert { background: #EFF6FF; border-left: 4px solid var(--primary); color: #1E40AF; padding: 15px; border-radius: 6px; margin-bottom: 30px; font-size: 0.95rem; }
+        .grid-imanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .iman-slot { aspect-ratio: 1 / 1; background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .iman-slot:hover { border-color: var(--primary); background: #EEF2FF; transform: translateY(-4px); }
+        .iman-slot.filled { border: none; background: white; box-shadow: var(--shadow); }
         .iman-slot img { width: 100%; height: 100%; object-fit: cover; }
-        .iman-slot small { font-weight: 600; color: var(--text-light); margin-top: 5px; }
 
-        /* --- FORMULARIOS --- */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+        /* --- FORMS --- */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: span 2; }
-
-        label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        input[type="text"], input[type="email"], input[type="tel"], textarea, select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            background: #fff;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
+        label { font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 6px; display: block; }
+        input[type="text"], input[type="email"], input[type="tel"], textarea, select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; background: #fff; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
 
         /* --- BOTONES --- */
-        .nav-buttons {
-            display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
-        }
-
-        .btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s;
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .btn { padding: 12px 28px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.25); }
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
-
         .btn-success { background: var(--secondary); color: white; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25); }
         .btn-success:hover { background: #059669; transform: translateY(-1px); }
-
         .btn-secondary { background: #E5E7EB; color: #374151; }
         .btn-secondary:hover { background: #D1D5DB; }
-
-        .btn-danger { background: #fee2e2; color: #b91c1c; }
-        .btn-danger:hover { background: #fecaca; }
-
         .btn:disabled { background: #D1D5DB; color: #9CA3AF; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* --- MODAL (EDITOR) --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px); /* Efecto moderno */
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .editor-container {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            width: 95%;
-            max-width: 850px;
-            display: flex; flex-direction: column;
-            max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-
+        /* --- MODAL --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; }
+        .editor-container { background: white; padding: 30px; border-radius: 16px; width: 95%; max-width: 850px; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
         .editor-body { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 20px; }
-
         .col-preview { flex: 0 0 auto; width: 100%; max-width: 320px; margin: 0 auto; }
         .col-controls { flex: 1; min-width: 300px; }
 
         .canvas-wrapper {
-            width: 100%; aspect-ratio: 1/1;
-            border: 4px solid #111; border-radius: 4px;
-            overflow: hidden; position: relative;
-            background: #eee; cursor: move;
+            width: 100%;
+            aspect-ratio: 1/1;
+            border: 4px solid #1F2937;
+            border-radius: 4px;
+            position: relative;
+            background: #000000;
+            overflow: hidden;
+            cursor: move;
+            touch-action: none;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Controles del editor mejorados */
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-        /* Custom Range Input */
-        input[type=range] {
-            -webkit-appearance: none; width: 100%; background: transparent;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 18px; width: 18px;
-            border-radius: 50%; background: var(--primary);
-            margin-top: -7px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; background: #E5E7EB; border-radius: 2px;
-        }
-
-        /* Custom File Input */
-        input[type="file"]::file-selector-button {
-            margin-right: 10px; border: none;
-            background: var(--primary); padding: 8px 12px;
-            border-radius: 6px; color: #fff; cursor: pointer;
-            font-size: 0.85rem; transition: background .2s ease-in-out;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--primary); margin-top: -7px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #E5E7EB; border-radius: 2px; }
+        input[type="file"]::file-selector-button { margin-right: 10px; border: none; background: var(--primary); padding: 8px 12px; border-radius: 6px; color: #fff; cursor: pointer; font-size: 0.85rem; transition: background .2s ease-in-out; }
         input[type="file"]::file-selector-button:hover { background: var(--primary-hover); }
-
-        /* Posición Botones */
-        .pos-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-        .pos-btn {
-            background: #F3F4F6; border: 1px solid #E5E7EB;
-            border-radius: 6px; padding: 8px 0;
-            cursor: pointer; font-weight: 600; color: #4B5563;
-            transition: all 0.2s;
-        }
-        .pos-btn:hover { background: #E5E7EB; }
-        .pos-btn.active {
-            background: var(--primary); color: white; border-color: var(--primary);
-        }
 
         .editor-footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
 
         /* --- LOADER --- */
-        .loader-overlay {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-            z-index: 200; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid #E5E7EB; border-top-color: var(--primary);
-            border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px;
-        }
+        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); z-index: 200; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #E5E7EB; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         @media (max-width: 768px) {
@@ -320,6 +141,11 @@
 </head>
 <body>
 
+<!-- PRECARGA DE FUENTES OCULTA (Vital para Canvas) -->
+<div style="font-family: 'Great Vibes', cursive; position:absolute; opacity:0; pointer-events:none;">.</div>
+<div style="font-family: 'Pacifico', cursive; position:absolute; opacity:0; pointer-events:none;">.</div>
+<div style="font-family: 'Fredoka', sans-serif; position:absolute; opacity:0; pointer-events:none;">.</div>
+
 <!-- LOADER -->
 <div class="loader-overlay" id="loader">
     <div class="spinner"></div>
@@ -332,18 +158,9 @@
 
     <!-- STEPPER -->
     <div class="stepper-wrapper">
-        <div class="stepper-item active" id="step-indicator-1">
-            <div class="step-counter">1</div>
-            <div class="step-name">Diseño</div>
-        </div>
-        <div class="stepper-item" id="step-indicator-2">
-            <div class="step-counter">2</div>
-            <div class="step-name">Entrega</div>
-        </div>
-        <div class="stepper-item" id="step-indicator-3">
-            <div class="step-counter">3</div>
-            <div class="step-name">Pago</div>
-        </div>
+        <div class="stepper-item active" id="step-indicator-1"><div class="step-counter">1</div><div class="step-name">Diseño</div></div>
+        <div class="stepper-item" id="step-indicator-2"><div class="step-counter">2</div><div class="step-name">Entrega</div></div>
+        <div class="stepper-item" id="step-indicator-3"><div class="step-counter">3</div><div class="step-name">Pago</div></div>
     </div>
 
     <form id="mainForm" onsubmit="return false;">
@@ -351,14 +168,12 @@
         <!-- PASO 1: DISEÑO -->
         <div id="step-1" class="step-section active">
             <div class="alert">
-                <strong>Instrucciones:</strong> Haz clic en cada cuadro gris para cargar tu foto. Puedes hacer zoom, moverla y agregar texto.
+                <strong>Instrucciones:</strong> Haz clic en cada cuadro para cargar tu foto.
             </div>
             <div class="grid-imanes" id="gridImanes"></div>
             <div class="nav-buttons">
-                <div><!-- Spacer --></div>
-                <button class="btn btn-primary" id="btnNext1" onclick="nextStep(2)" disabled>
-                    Siguiente Paso <span style="font-size:1.2em">→</span>
-                </button>
+                <div></div>
+                <button class="btn btn-primary" id="btnNext1" onclick="nextStep(2)" disabled>Siguiente Paso <span style="font-size:1.2em">→</span></button>
             </div>
         </div>
 
@@ -366,12 +181,12 @@
         <div id="step-2" class="step-section">
             <h3>Datos de Entrega</h3>
             <div class="form-grid">
-                <div><label>Nombres</label><input type="text" id="ship_name" placeholder="Ej. Juan"></div>
-                <div><label>Apellidos</label><input type="text" id="ship_surname" placeholder="Ej. Pérez"></div>
-                <div><label>Identificación</label><input type="text" id="ship_id"></div>
-                <div><label>Teléfono Celular</label><input type="tel" id="ship_phone" placeholder="099..."></div>
-                <div class="full-width"><label>Email</label><input type="email" id="ship_email" placeholder="nombre@correo.com"></div>
-                <div class="full-width"><label>Dirección Exacta</label><input type="text" id="ship_address" placeholder="Calle, Número, Ciudad"></div>
+                <div><label>Nombres</label><input type="text" id="ship_name"></div>
+                <div><label>Apellidos</label><input type="text" id="ship_surname"></div>
+                <div><label>Identificación / DNI</label><input type="text" id="ship_id"></div>
+                <div><label>Teléfono Celular</label><input type="tel" id="ship_phone"></div>
+                <div class="full-width"><label>Email</label><input type="email" id="ship_email"></div>
+                <div class="full-width"><label>Dirección Exacta</label><input type="text" id="ship_address"></div>
                 <div class="full-width"><label>Referencias / Comentarios</label><textarea id="ship_comments" rows="2"></textarea></div>
             </div>
             <div class="nav-buttons">
@@ -383,12 +198,10 @@
         <!-- PASO 3: PAGO -->
         <div id="step-3" class="step-section">
             <h3>Facturación y Pago</h3>
-
             <div style="background: #F9FAFB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #E5E7EB;">
                 <input type="checkbox" id="same_data" onchange="copyShippingData()" style="width:auto; margin-right:10px;">
-                <label for="same_data" style="display:inline; font-weight:400;">Usar los mismos datos de entrega para la factura</label>
+                <label for="same_data" style="display:inline; font-weight:400;">Usar los mismos datos de entrega</label>
             </div>
-
             <div class="form-grid">
                 <div><label>Nombres</label><input type="text" id="bill_name"></div>
                 <div><label>Apellidos</label><input type="text" id="bill_surname"></div>
@@ -397,19 +210,13 @@
                 <div class="full-width"><label>Email</label><input type="email" id="bill_email"></div>
                 <div class="full-width"><label>Dirección</label><input type="text" id="bill_address"></div>
             </div>
-
             <div style="margin-top: 30px;">
                 <input type="checkbox" id="terms" required style="width:auto; margin-right:10px;">
-                <label for="terms" style="display:inline; color: var(--text-light); font-size:0.9rem;">
-                    He leído y acepto el <a href="#" style="color:var(--primary)">tratamiento de datos personales</a>.
-                </label>
+                <label for="terms" style="display:inline; color: var(--text-light); font-size:0.9rem;">He leído y acepto el <a href="#" style="color:var(--primary)">tratamiento de datos personales</a>.</label>
             </div>
-
             <div class="nav-buttons">
                 <button class="btn btn-secondary" onclick="prevStep(2)">← Atrás</button>
-                <button class="btn btn-success" onclick="processOrderCloudinary()">
-                    Finalizar y Pagar (WhatsApp)
-                </button>
+                <button class="btn btn-success" onclick="processOrderCloudinary()">Finalizar y Pagar (WhatsApp)</button>
             </div>
         </div>
     </form>
@@ -429,8 +236,8 @@
                 <div class="canvas-wrapper">
                     <canvas id="editorCanvas" width="300" height="300"></canvas>
                 </div>
-                <p style="font-size: 0.8rem; text-align: center; margin-top: 8px; color: #6B7280;">
-                    💡 Arrastra la foto para encuadrarla
+                <p style="font-size: 0.8rem; text-align: center; margin-top: 8px; color: #6B7280; background: #f0fdf4; padding: 5px; border-radius: 5px; border: 1px solid #bbf7d0; color: #166534;">
+                    👋 <strong>Tip:</strong> Arrastra con el dedo/mouse para ajustar.
                 </p>
             </div>
 
@@ -443,38 +250,26 @@
                     </div>
 
                     <div class="full-span">
-                        <label>2. Zoom</label>
-                        <input type="range" id="zoomControl" min="0.1" max="3" step="0.1" value="1">
+                        <label>2. Zoom Foto</label>
+                        <input type="range" id="zoomControl" min="0.05" max="5" step="0.05" value="1">
                     </div>
 
                     <div class="full-span" style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 5px;">
-                        <label>3. Agregar Texto (Opcional)</label>
-                        <input type="text" id="textInput" placeholder="Escribe aquí...">
+                        <label>3. Texto (Arrastra para mover)</label>
+                        <input type="text" id="textInput" placeholder="Ej: Mi Cumpleaños">
                     </div>
 
-                    <!-- Posición Texto -->
-                    <div class="full-span">
-                        <label style="font-size:0.8rem; margin-bottom:5px;">Posición del Texto</label>
-                        <div class="pos-grid">
-                            <button class="pos-btn" onclick="setTextPos('tl')">↖</button>
-                            <button class="pos-btn" onclick="setTextPos('tm')">⬆</button>
-                            <button class="pos-btn" onclick="setTextPos('tr')">↗</button>
-                            <button class="pos-btn" onclick="setTextPos('bl')">↙</button>
-                            <button class="pos-btn" onclick="setTextPos('bm')">⬇</button>
-                            <button class="pos-btn" onclick="setTextPos('br')">↘</button>
-                        </div>
-                        <div style="margin-top:6px;">
-                            <button class="pos-btn" onclick="setTextPos('cc')" style="width:100%">Centrar (●)</button>
-                        </div>
-                    </div>
-
+                    <!-- SELECCION DE FUENTES NUEVA -->
                     <div>
                         <label>Fuente</label>
                         <select id="fontFamily">
                             <option value="Arial">Arial</option>
-                            <option value="Times New Roman">Times</option>
-                            <option value="Impact">Impact</option>
-                            <option value="Verdana">Verdana</option>
+                            <option value="'Great Vibes', cursive">My Love (Elegante)</option>
+                            <option value="'Pacifico', cursive">Anastasia (Manuscrita)</option>
+                            <option value="'Fredoka', sans-serif">Moderna (Redonda)</option>
+                            <option value="'Inter', sans-serif">Inter (Limpia)</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Impact">Impact (Gruesa)</option>
                         </select>
                     </div>
 
@@ -486,8 +281,8 @@
                     </div>
 
                     <div class="full-span">
-                        <label>Tamaño</label>
-                        <input type="range" id="fontSize" min="10" max="60" value="30">
+                        <label>Tamaño Texto</label>
+                        <input type="range" id="fontSize" min="10" max="80" value="40">
                     </div>
                 </div>
             </div>
@@ -512,16 +307,15 @@
     //  2. CONFIGURACIÓN DE CLOUDINARY (PON TUS DATOS)
     // ==========================================
     const CLOUDINARY_CLOUD_NAME = "dwtdqotop";
-    const CLOUDINARY_UPLOAD_PRESET = "imagen"; // Debe ser 'Unsigned'
+    const CLOUDINARY_UPLOAD_PRESET = "imagen";
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
     const SHOP_CONFIG = {
         whatsappNumber: "593986805369",
         price: 16.00,
-        shippingCost: 3.00
+        shippingCost: 0.00
     };
 
-    // Inicializar EmailJS
     (function(){ emailjs.init(EMAILJS_PUBLIC_KEY); })();
 
     // --- ESTADO GLOBAL ---
@@ -531,12 +325,17 @@
     let canvas = document.getElementById('editorCanvas');
     let ctx = canvas.getContext('2d');
 
-    let defaultState = { x: 0, y: 0, scale: 1, text: "", fontSize: 30, fontFamily: "Arial", color: "#ffffff", textPos: 'cc', isDragging: false, lastX: 0, lastY: 0 };
+    let defaultState = {
+        x: 0, y: 0, scale: 1,
+        text: "", fontSize: 40, fontFamily: "Arial", color: "#ffffff",
+        textX: 150, textY: 150,
+        draggingTarget: null,
+        lastX: 0, lastY: 0
+    };
     let editorState = { ...defaultState };
 
     window.onload = function() { renderGrid(); };
 
-    // --- RENDERIZADO ---
     function renderGrid() {
         const container = document.getElementById('gridImanes');
         container.innerHTML = '';
@@ -549,7 +348,6 @@
                 img.src = slot.previewData;
                 div.appendChild(img);
             } else {
-                // Icono más bonito
                 div.innerHTML = `
                     <div style="font-size:2rem; color:#D1D5DB; line-height:1;">+</div>
                     <small style="color:#6B7280; font-size:0.8rem;">Imán ${index + 1}</small>
@@ -560,7 +358,6 @@
         checkStep1Validity();
     }
 
-    // --- EDITOR ---
     function openEditor(index) {
         currentSlotIndex = index;
         document.getElementById('currentSlotNum').innerText = index + 1;
@@ -568,11 +365,12 @@
         if (slots[index]) {
             imgObject.src = slots[index].originalSrc;
             editorState = { ...slots[index].editorState };
+            if(editorState.textX === undefined) editorState.textX = 150;
+            if(editorState.textY === undefined) editorState.textY = 150;
             loadControls();
         } else {
             resetEditor();
         }
-        updatePosButtonsUI();
     }
 
     function closeEditor() { document.getElementById('editorModal').style.display = 'none'; }
@@ -583,8 +381,11 @@
         document.getElementById('imageUpload').value = "";
         document.getElementById('textInput').value = "";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Texto placeholder en el canvas
-        ctx.font = "bold 16px Inter"; ctx.fillStyle="#9CA3AF"; ctx.textAlign="center";
+
+        // Rellenar de negro para evitar brillos
+        ctx.fillStyle = "#000000"; ctx.fillRect(0,0,canvas.width, canvas.height);
+
+        ctx.font = "bold 16px Inter"; ctx.fillStyle="#666"; ctx.textAlign="center";
         ctx.fillText("Sube una foto", 150, 140);
         ctx.font = "30px Inter"; ctx.fillText("📷", 150, 180);
     }
@@ -599,9 +400,12 @@
 
     // --- DIBUJO CANVAS ---
     function drawCanvas() {
+        // Limpiar con color NEGRO ABSOLUTO
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // 1. Imagen
         if (imgObject.src) {
             ctx.save();
             ctx.translate(canvas.width/2, canvas.height/2);
@@ -611,28 +415,20 @@
             ctx.restore();
         }
 
+        // 2. Texto
         if (editorState.text) {
             ctx.save();
+            // IMPORTANTE: Se usa la fuente seleccionada
             ctx.font = `${editorState.fontSize}px ${editorState.fontFamily}`;
             ctx.fillStyle = editorState.color;
-            // Texto plano sin borde (Clean look)
-            let tx, ty, padding = 15;
-            switch(editorState.textPos) {
-                case 'tl': tx=padding; ty=padding; ctx.textAlign="left"; ctx.textBaseline="top"; break;
-                case 'tm': tx=canvas.width/2; ty=padding; ctx.textAlign="center"; ctx.textBaseline="top"; break;
-                case 'tr': tx=canvas.width-padding; ty=padding; ctx.textAlign="right"; ctx.textBaseline="top"; break;
-                case 'cc': tx=canvas.width/2; ty=canvas.height/2; ctx.textAlign="center"; ctx.textBaseline="middle"; break;
-                case 'bl': tx=padding; ty=canvas.height-padding; ctx.textAlign="left"; ctx.textBaseline="bottom"; break;
-                case 'bm': tx=canvas.width/2; ty=canvas.height-padding; ctx.textAlign="center"; ctx.textBaseline="bottom"; break;
-                case 'br': tx=canvas.width-padding; ty=canvas.height-padding; ctx.textAlign="right"; ctx.textBaseline="bottom"; break;
-                default: tx=canvas.width/2; ty=canvas.height/2;
-            }
-            ctx.fillText(editorState.text, tx, ty);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(editorState.text, editorState.textX, editorState.textY);
             ctx.restore();
         }
     }
 
-    // Listeners
+    // --- CARGA DE IMAGEN CON AUTO-AJUSTE ---
     document.getElementById('imageUpload').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if(file) {
@@ -640,9 +436,14 @@
             reader.onload = (ev) => {
                 imgObject = new Image();
                 imgObject.onload = () => {
-                    editorState.scale = 1;
-                    editorState.x = (canvas.width - imgObject.width)/2;
-                    editorState.y = (canvas.height - imgObject.height)/2;
+                    const ratioW = canvas.width / imgObject.width;
+                    const ratioH = canvas.height / imgObject.height;
+                    let newScale = Math.max(ratioW, ratioH) * 1.1;
+
+                    editorState.scale = newScale;
+                    document.getElementById('zoomControl').value = newScale;
+                    editorState.x = (canvas.width - imgObject.width) / 2;
+                    editorState.y = (canvas.height - imgObject.height) / 2;
                     drawCanvas();
                 };
                 imgObject.src = ev.target.result;
@@ -654,7 +455,13 @@
     ['zoomControl', 'textInput', 'fontSize', 'fontFamily', 'fontColor'].forEach(id => {
         document.getElementById(id).addEventListener('input', (e) => {
             if (id === 'zoomControl') editorState.scale = parseFloat(e.target.value);
-            if (id === 'textInput') editorState.text = e.target.value;
+            if (id === 'textInput') {
+                editorState.text = e.target.value;
+                if(editorState.text && editorState.textX === 0) {
+                    editorState.textX = canvas.width / 2;
+                    editorState.textY = canvas.height / 2;
+                }
+            }
             if (id === 'fontSize') editorState.fontSize = parseInt(e.target.value);
             if (id === 'fontFamily') editorState.fontFamily = e.target.value;
             if (id === 'fontColor') editorState.color = e.target.value;
@@ -662,25 +469,69 @@
         });
     });
 
-    function setTextPos(pos) { editorState.textPos = pos; updatePosButtonsUI(); drawCanvas(); }
-
-    function updatePosButtonsUI() {
-        document.querySelectorAll('.pos-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if(btn.getAttribute('onclick').includes(`'${editorState.textPos}'`)) btn.classList.add('active');
-        });
+    // --- DRAG & DROP ---
+    function getPointerPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        // Calcular escala visual del canvas si se encoge
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
     }
 
-    canvas.addEventListener('mousedown', (e) => { editorState.isDragging=true; editorState.lastX=e.offsetX; editorState.lastY=e.offsetY; });
-    canvas.addEventListener('mousemove', (e) => {
-        if(editorState.isDragging && imgObject.src){
-            editorState.x += e.offsetX - editorState.lastX;
-            editorState.y += e.offsetY - editorState.lastY;
-            editorState.lastX = e.offsetX; editorState.lastY = e.offsetY;
-            drawCanvas();
+    function handleStart(e) {
+        if(e.type === 'touchstart') e.preventDefault();
+        const pos = getPointerPos(e);
+        editorState.lastX = pos.x;
+        editorState.lastY = pos.y;
+
+        let hitText = false;
+        if (editorState.text) {
+            ctx.font = `${editorState.fontSize}px ${editorState.fontFamily}`;
+            const metrics = ctx.measureText(editorState.text);
+            const txtW = metrics.width;
+            const txtH = editorState.fontSize;
+            const left = editorState.textX - txtW/2 - 20;
+            const right = editorState.textX + txtW/2 + 20;
+            const top = editorState.textY - txtH/2 - 20;
+            const bottom = editorState.textY + txtH/2 + 20;
+            if (pos.x >= left && pos.x <= right && pos.y >= top && pos.y <= bottom) hitText = true;
         }
-    });
-    window.addEventListener('mouseup', () => editorState.isDragging=false);
+
+        if (hitText) editorState.draggingTarget = 'text';
+        else if (imgObject.src) editorState.draggingTarget = 'image';
+        else editorState.draggingTarget = null;
+    }
+
+    function handleMove(e) {
+        if (!editorState.draggingTarget) return;
+        if(e.type === 'touchmove') e.preventDefault();
+
+        const pos = getPointerPos(e);
+        const dx = pos.x - editorState.lastX;
+        const dy = pos.y - editorState.lastY;
+
+        if (editorState.draggingTarget === 'text') {
+            editorState.textX += dx;
+            editorState.textY += dy;
+        } else if (editorState.draggingTarget === 'image') {
+            editorState.x += dx;
+            editorState.y += dy;
+        }
+        editorState.lastX = pos.x;
+        editorState.lastY = pos.y;
+        drawCanvas();
+    }
+
+    function handleEnd(e) { editorState.draggingTarget = null; }
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('touchstart', handleStart, {passive: false});
+    canvas.addEventListener('mousemove', handleMove);
+    canvas.addEventListener('touchmove', handleMove, {passive: false});
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchend', handleEnd);
 
     function saveSlot() {
         if (!imgObject.src) return alert("Carga una imagen primero");
@@ -694,9 +545,7 @@
         const btn = document.getElementById('btnNext1');
         const count = slots.filter(s => s).length;
         btn.disabled = count !== 8;
-        // Texto dinámico en botón
         btn.innerHTML = count === 8 ? 'Siguiente Paso <span style="font-size:1.2em">→</span>' : `Faltan ${8 - count} fotos`;
-        // Estilo deshabilitado visualmente fuerte si faltan fotos
         if(count!==8) btn.style.opacity = "0.6"; else btn.style.opacity = "1";
     }
 
@@ -704,7 +553,6 @@
         document.querySelectorAll('.step-section').forEach(el => el.classList.remove('active'));
         document.getElementById(`step-${n}`).classList.add('active');
         window.scrollTo({top:0, behavior: 'smooth'});
-
         for(let i=1; i<=3; i++) {
             const el = document.getElementById(`step-indicator-${i}`);
             el.className = `stepper-item ${i === n ? 'active' : (i < n ? 'completed' : '')}`;
@@ -772,9 +620,7 @@
 
             const imageUrls = await Promise.all(uploadPromises);
 
-            if(imageUrls.some(url => url === null)) {
-                throw new Error("Error al subir imágenes. Verifica tu conexión o configuración.");
-            }
+            if(imageUrls.some(url => url === null)) throw new Error("Error al subir imágenes. Verifica tu conexión.");
 
             loaderText.innerHTML = "Enviando pedido...";
 
@@ -796,8 +642,7 @@
             const msjWA = `Hola, realicé pedido de 8 imanes (${nombre}). Total $${total}. Las imágenes ya fueron enviadas a tu sistema.`;
             const urlWA = `https://api.whatsapp.com/send?phone=${SHOP_CONFIG.whatsappNumber}&text=${encodeURIComponent(msjWA)}`;
 
-            // Modal Success simple
-            if(confirm("¡Pedido enviado con éxito! Ahora serás redirigido a WhatsApp para coordinar el pago.")) {
+            if(confirm("¡Pedido enviado con éxito! Ahora serás redirigido a WhatsApp.")) {
                 window.open(urlWA, '_blank');
             }
 
