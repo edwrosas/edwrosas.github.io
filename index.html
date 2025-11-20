@@ -763,6 +763,14 @@
     };
     window.prevStep = (n) => window.nextStep(n);
 
+    // --- FUNCIONES DE SEGURIDAD ---
+    function sanitizeInput(str) {
+        if (!str) return "";
+        const temp = document.createElement('div');
+        temp.textContent = str;
+        return temp.innerHTML;
+    }
+
     window.validateAndNext = (n) => {
         const requiredIds = ['ship_name', 'ship_surname', 'ship_id', 'ship_phone', 'ship_email', 'ship_street', 'ship_number', 'ship_intersection'];
         let valid = true;
@@ -812,12 +820,15 @@
             const urls = await Promise.all(slots.map(s => upload(s.preview)));
             if(urls.some(u => !u)) throw new Error("Error subiendo imágenes");
 
+            // Sanitizamos los datos antes de enviarlos
+            const getSafeVal = (id) => sanitizeInput(document.getElementById(id).value);
+
             const fullAddress = `${document.getElementById('ship_street').value} #${document.getElementById('ship_number').value} y ${document.getElementById('ship_intersection').value}. (${document.getElementById('ship_comments').value})`;
 
             const p = {
-                cust_name: document.getElementById('ship_name').value,
-                cust_surname: document.getElementById('ship_surname').value,
-                cust_phone: document.getElementById('ship_phone').value,
+                cust_name: getSafeVal('ship_name'),
+                cust_surname: getSafeVal('ship_surname'),
+                cust_phone: getSafeVal('ship_phone'),
                 cust_address: fullAddress,
                 total_price: "$" + 19.00,
                 img1_link: urls[0], img2_link: urls[1], img3_link: urls[2], img4_link: urls[3],
