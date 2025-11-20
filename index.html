@@ -23,617 +23,712 @@
             --text-main: #1F2937;
             --text-light: #6B7280;
             --border: #E5E7EB;
-            --radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --error: #EF4444;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            margin: 0; padding: 15px;
-            color: var(--text-main);
-            line-height: 1.5;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); margin: 0; padding: 15px; color: var(--text-main); }
 
-        .container {
-            max-width: 950px; margin: 0 auto;
-            background: var(--surface); padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            min-height: 80vh;
-        }
+        .container { max-width: 950px; margin: 0 auto; background: var(--surface); padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); min-height: 85vh; }
 
-        h2 { text-align: center; font-size: 1.6rem; margin-bottom: 25px; color: #111827; font-weight: 700; }
+        h2 { text-align: center; margin-bottom: 25px; color: #111827; }
 
-        /* --- STEPPER --- */
-        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 40px; position: relative; }
-        .stepper-wrapper::before { content: ''; position: absolute; top: 18px; left: 0; width: 100%; height: 3px; background: #E5E7EB; z-index: 0; }
+        /* STEPPER */
+        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; }
+        .stepper-wrapper::before { content: ''; position: absolute; top: 15px; left: 0; width: 100%; height: 3px; background: #E5E7EB; z-index: 0; }
         .stepper-item { position: relative; z-index: 1; text-align: center; background: var(--surface); padding: 0 10px; }
-        .step-counter { width: 35px; height: 35px; border-radius: 50%; background: #fff; border: 3px solid #E5E7EB; color: #9CA3AF; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; }
+        .step-counter { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 3px solid #E5E7EB; color: #9CA3AF; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: 700; transition: 0.3s; }
         .step-name { font-size: 0.75rem; font-weight: 600; color: #9CA3AF; }
-        .stepper-item.active .step-counter { border-color: var(--primary); background: var(--primary); color: white; transform: scale(1.1); }
-        .stepper-item.active .step-name { color: var(--primary); }
-        .stepper-item.completed .step-counter { background: var(--secondary); border-color: var(--secondary); color: white; }
+        .active .step-counter { border-color: var(--primary); background: var(--primary); color: white; transform: scale(1.1); }
+        .active .step-name { color: var(--primary); }
+        .completed .step-counter { background: var(--secondary); border-color: var(--secondary); color: white; }
 
+        /* SECCIONES */
         .step-section { display: none; animation: fadeIn 0.4s ease-out; }
         .step-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-        /* --- SUCCESS SCREEN (NUEVO) --- */
-        #successSection { display: none; text-align: center; padding: 20px 0; }
-        .success-icon { font-size: 4rem; color: var(--secondary); margin-bottom: 20px; display: block; }
-        .btn-whatsapp {
-            background-color: #25D366; color: white;
-            font-size: 1.1rem; padding: 15px 30px;
-            border-radius: 50px; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 10px;
-            font-weight: bold; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
-            transition: transform 0.2s; margin-top: 20px;
-        }
-        .btn-whatsapp:active { transform: scale(0.95); }
-
-        /* --- GRID --- */
-        .alert { background: #EFF6FF; border-left: 4px solid var(--primary); color: #1E40AF; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem; }
-        .grid-imanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .iman-slot { aspect-ratio: 1/1; background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; }
-        .iman-slot.filled { border: none; box-shadow: var(--shadow); background: white; }
+        /* GRID FOTOS */
+        .grid-imanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .iman-slot { aspect-ratio: 1/1; background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; transition: 0.2s; }
+        .iman-slot:hover { border-color: var(--primary); background: #EEF2FF; }
+        .iman-slot.filled { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white; }
         .iman-slot img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- FORMS --- */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .full-width { grid-column: span 2; }
-        label { font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
-        input, textarea, select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; /* Evita zoom en iOS */ background: #fff; font-family: 'Inter', sans-serif; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1); }
-
-        /* --- BOTONES --- */
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        /* BOTONES */
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; width: 100%; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+        .nav-buttons { display: flex; gap: 10px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #E5E7EB; color: #374151; }
         .btn-success { background: var(--secondary); color: white; }
-        .btn:disabled { background: #D1D5DB; opacity: 0.7; cursor: not-allowed; }
+        .btn-fridge { background: #3b82f6; color: white; margin-bottom: 15px; width: auto; display: inline-flex; }
+        .btn-upload { background: #e0e7ff; color: var(--primary); border: 1px solid #c7d2fe; width: 100%; padding: 10px; font-size: 0.9rem; margin-top: 5px; display:none; }
 
-        /* --- MODAL --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 100; justify-content: center; align-items: center; }
-        .editor-container { background: white; width: 95%; max-width: 500px; border-radius: 16px; overflow: hidden; max-height: 95vh; display: flex; flex-direction: column; }
+        /* FORMS */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; display: block; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; }
+        .input-error { border-color: var(--error) !important; background-color: #FEF2F2; }
 
-        .editor-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .editor-body { padding: 15px; overflow-y: auto; }
+        /* CHECKBOXES LEGALES */
+        .legal-check-group { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
+        .legal-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: #4B5563; }
+        .legal-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); cursor: pointer; }
+        .legal-item a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .legal-item a:hover { text-decoration: underline; }
+
+        /* --- MODAL EDITOR --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .editor-container { background: white; width: 95%; max-width: 500px; border-radius: 16px; max-height: 95vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        @media (min-width: 800px) {
+            .editor-container { max-width: 900px; height: 85vh; }
+            .editor-body { display: grid; grid-template-columns: 320px 1fr; gap: 30px; padding: 25px; overflow: hidden; flex: 1; }
+            .panel-canvas { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+            .panel-controls { overflow-y: auto; padding-right: 10px; height: 100%; }
+        }
+        @media (max-width: 799px) { .editor-body { padding: 15px; overflow-y: auto; flex: 1; } }
 
         .canvas-wrapper {
-            width: 100%; aspect-ratio: 1/1;
-            border: 4px solid #1F2937; border-radius: 4px;
-            position: relative; background: #000;
-            overflow: hidden; margin: 0 auto 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            touch-action: none; /* Vital para móviles */
+            width: 280px; height: 280px; margin: 0 auto 5px;
+            border: 4px solid #333; border-radius: 4px;
+            background: #111; position: relative; overflow: hidden;
+            touch-action: none; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
-        canvas { display: block; width: 100%; height: 100%; }
+        canvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
 
-        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input[type=range] { width: 100%; margin: 5px 0; }
-
-        .editor-footer { padding: 15px; background: #F9FAFB; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eee; }
-        .btn-modal { padding: 10px 20px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
-
-        /* --- LOADER --- */
-        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #E5E7EB; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        @media (max-width: 600px) {
-            .container { padding: 20px; margin: 10px; width: auto; }
-            .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            .btn { width: 100%; justify-content: center; }
-            .controls-grid { grid-template-columns: 1fr; }
+        #uploadOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(20,20,20,0.9);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            cursor: pointer; z-index: 10;
+            color: white; text-align: center;
         }
+        #uploadOverlay span { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+        /* SLIDERS */
+        .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .slider-icon { font-size: 1.2rem; color: #6b7280; width: 25px; text-align: center; font-weight: bold; }
+        .slider-label { font-size: 0.8rem; color:#666; margin-bottom: 2px; display:block;}
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 30px; cursor: pointer; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #E5E7EB; border-radius: 10px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--primary); margin-top: -7px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        /* CONTROLES */
+        .controls-group { margin-bottom: 20px; border-bottom: 1px solid #f3f4f6; padding-bottom: 15px; }
+        .controls-title { font-size: 0.8rem; text-transform: uppercase; color: #9ca3af; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; }
+
+        /* FILTROS GRID */
+        .filters-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; width: 100%; }
+        .filter-btn { height: 90px; border: 2px solid #eee; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; background: #fff; overflow: hidden; transition: 0.2s; }
+        .filter-thumb { width: 100%; height: 65px; object-fit: cover; background: #ddd; }
+        .filter-name { height: 25px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: #666; }
+        .filter-btn.active { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .filter-btn.active .filter-name { background: #eef2ff; color: var(--primary); }
+
+        .polaroid-toggle { display: flex; align-items: center; justify-content: space-between; background: #f0fdf4; padding: 10px; border-radius: 8px; border: 1px solid #bbf7d0; cursor: pointer; margin-bottom: 20px; }
+        .polaroid-check { width: 20px; height: 20px; accent-color: var(--secondary); }
+
+        /* FOOTER */
+        .editor-footer { padding: 20px; background: #ffffff; border-top: 1px solid #eee; display: flex; gap: 15px; justify-content: space-between; }
+        .editor-footer .btn { flex: 1; margin: 0; justify-content: center; }
+
+        /* SUCCESS */
+        #successSection { display: none; text-align: center; padding: 40px 0; }
+        .btn-whatsapp { background-color: #25D366; color: white; font-size: 1.1rem; padding: 15px 30px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); transition: transform 0.2s; margin-top: 20px; }
+
+        /* REFRI */
+        .fridge-bg { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); width: 320px; height: 500px; border-radius: 20px; border: 8px solid #94a3b8; position: relative; margin: 0 auto; box-shadow: inset 10px 0 20px rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-wrap: wrap; align-content: flex-start; padding: 20px; gap: 10px; overflow: hidden; }
+        .fridge-handle { position: absolute; left: 10px; top: 50px; bottom: 50px; width: 10px; background: linear-gradient(to right, #cbd5e1, #fff, #94a3b8); border-radius: 5px; opacity: 0.6; }
+        .fridge-magnet { width: 80px; height: 80px; box-shadow: 2px 4px 8px rgba(0,0,0,0.4); transform: rotate(-2deg); border: 1px solid white; transition: 0.3s; background: white; object-fit: cover; }
+
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } .editor-footer { flex-direction: row; } }
     </style>
 </head>
 <body>
 
-<!-- PRECARGA DE FUENTES -->
-<div style="font-family: 'Great Vibes', cursive; position:absolute; opacity:0; pointer-events:none;">.</div>
-<div style="font-family: 'Pacifico', cursive; position:absolute; opacity:0; pointer-events:none;">.</div>
-<div style="font-family: 'Fredoka', sans-serif; position:absolute; opacity:0; pointer-events:none;">.</div>
-
-<!-- LOADER -->
-<div class="loader-overlay" id="loader">
-    <div class="spinner"></div>
-    <h3 id="loaderText">Procesando...</h3>
-    <p id="loaderSubtext" style="font-size: 0.9rem; color: #666;">Por favor no cierres la ventana</p>
+<!-- Preload Fonts -->
+<div style="opacity:0;pointer-events:none;position:absolute;">
+    <span style="font-family:'Great Vibes'">.</span><span style="font-family:'Pacifico'">.</span><span style="font-family:'Fredoka'">.</span>
 </div>
+
+<div class="loader-overlay" id="loader" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.9);z-index:200;justify-content:center;align-items:center;flex-direction:column;">
+    <div style="width:40px;height:40px;border:4px solid #eee;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;"></div>
+    <p style="margin-top:15px;color:#666">Procesando...</p>
+</div>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
 <div class="container">
 
-    <!-- CABECERA Y PASOS -->
-    <div id="headerSection">
-        <h2>Diseña tus Imanes 5x5</h2>
-        <div class="stepper-wrapper">
-            <div class="stepper-item active" id="step-indicator-1"><div class="step-counter">1</div><div class="step-name">Diseño</div></div>
-            <div class="stepper-item" id="step-indicator-2"><div class="step-counter">2</div><div class="step-name">Entrega</div></div>
-            <div class="stepper-item" id="step-indicator-3"><div class="step-counter">3</div><div class="step-name">Pago</div></div>
-        </div>
-    </div>
-
-    <!-- PANTALLA DE ÉXITO (Inicialmente oculta) -->
+    <!-- SUCCESS SCREEN -->
     <div id="successSection">
-        <div class="success-icon">🎉</div>
-        <h2 style="color: var(--secondary); margin-bottom: 10px;">¡Pedido Generado!</h2>
-        <p style="color: #4B5563; font-size: 1.1rem; margin-bottom: 30px;">
-            Las imágenes se enviaron correctamente a nuestro sistema.
-        </p>
-        <p style="font-size: 0.9rem; color: #6B7280;">Para finalizar tu compra, envíanos el mensaje por WhatsApp:</p>
-
-        <!-- BOTÓN WHATSAPP FINAL -->
+        <div style="font-size:4rem;margin-bottom:10px;">🎉</div>
+        <h2 style="color:var(--secondary)">¡Pedido Listo!</h2>
+        <p>Las imágenes se enviaron correctamente.</p>
         <a href="#" id="finalWhatsappLink" class="btn-whatsapp" target="_blank">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c1.009.55 2.119.841 3.281.841h.001c3.182 0 5.768-2.587 5.769-5.767.001-3.181-2.587-5.767-5.768-5.767zm6.526 9.846c-.25.702-1.47 1.26-2.01 1.32-.54.059-1.24.23-4.32-1.002-3.87-1.55-6.46-5.74-6.65-5.99-.19-.25-1.59-2.11-1.59-4.03 0-1.92.99-2.86 1.34-3.25.35-.39.76-.49 1.01-.49.25 0 .5.01.71.01.22 0 .51-.08.8.61.29.7 1 2.45 1.09 2.63.09.18.15.4.04.63-.11.23-.17.37-.34.57-.17.2-.36.45-.51.6-.16.17-.33.35-.14.69.19.34.84 1.39 1.81 2.25 1.24 1.1 2.29 1.44 2.61 1.6.32.16.51.14.7-.07.19-.22.82-.96 1.04-1.29.22-.33.44-.27.74-.16.3.11 1.91.9 2.24 1.06.33.16.55.24.63.37.08.13.08.76-.17 1.46z"/></svg>
-            Abrir WhatsApp y Enviar
+            Abrir WhatsApp y Pagar
         </a>
-
-        <br><br>
-        <button onclick="location.reload()" class="btn btn-secondary" style="margin-top: 20px; font-size: 0.9rem;">Crear otro pedido</button>
     </div>
 
-    <form id="mainForm" onsubmit="return false;">
+    <div id="mainWrapper">
+        <h2>Diseña tus Imanes 5x5</h2>
 
-        <!-- PASO 1: DISEÑO -->
+        <div class="stepper-wrapper">
+            <div class="stepper-item active" id="st1"><div class="step-counter">1</div><small>Diseño</small></div>
+            <div class="stepper-item" id="st2"><div class="step-counter">2</div><small>Entrega</small></div>
+            <div class="stepper-item" id="st3"><div class="step-counter">3</div><small>Pago</small></div>
+        </div>
+
+        <!-- PASO 1 -->
         <div id="step-1" class="step-section active">
-            <div class="alert">
-                👆 <strong>Toca los cuadros grises</strong> para subir tus 8 fotos.
-            </div>
+            <div class="alert">🎨 Toca los cuadros para editar.</div>
+
             <div class="grid-imanes" id="gridImanes"></div>
+
+            <div style="text-align:center; margin-bottom:20px;">
+                <button class="btn btn-fridge" onclick="openFridgePreview()">❄️ Ver en la Refri</button>
+            </div>
+
             <div class="nav-buttons">
                 <div></div>
-                <button class="btn btn-primary" id="btnNext1" onclick="nextStep(2)" disabled>Siguiente →</button>
+                <button class="btn btn-primary" id="btnNext1" onclick="nextStep(2)" disabled style="width:auto">Siguiente ➜</button>
             </div>
         </div>
 
-        <!-- PASO 2: ENTREGA -->
+        <!-- PASO 2 -->
         <div id="step-2" class="step-section">
             <h3>Datos de Entrega</h3>
+            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">* Campos obligatorios</p>
             <div class="form-grid">
-                <div><label>Nombres</label><input type="text" id="ship_name"></div>
-                <div><label>Apellidos</label><input type="text" id="ship_surname"></div>
-                <div><label>Identificación</label><input type="text" id="ship_id"></div>
-                <div><label>Celular</label><input type="tel" id="ship_phone"></div>
-                <div class="full-width"><label>Email</label><input type="email" id="ship_email"></div>
-                <div class="full-width"><label>Dirección</label><input type="text" id="ship_address"></div>
-                <div class="full-width"><label>Referencias</label><textarea id="ship_comments" rows="2"></textarea></div>
+                <input type="text" id="ship_name" placeholder="Nombres *">
+                <input type="text" id="ship_surname" placeholder="Apellidos *">
+                <input type="text" id="ship_id" placeholder="Identificación *">
+                <input type="tel" id="ship_phone" placeholder="Celular *">
+                <input type="email" id="ship_email" class="full-width" placeholder="Email *">
+
+                <input type="text" id="ship_street" class="full-width" placeholder="Calle Principal *">
+                <input type="text" id="ship_number" placeholder="Número de casa/edificio *">
+                <input type="text" id="ship_intersection" placeholder="Intersección (Calle transversal) *">
+
+                <textarea id="ship_comments" class="full-width" rows="2" placeholder="Referencia / Comentarios (Opcional)"></textarea>
             </div>
             <div class="nav-buttons">
-                <button class="btn btn-secondary" onclick="prevStep(1)">← Atrás</button>
-                <button class="btn btn-primary" onclick="validateAndNext(2)">Siguiente →</button>
+                <button class="btn btn-secondary" onclick="prevStep(1)">Atrás</button>
+                <button class="btn btn-primary" onclick="validateAndNext(3)">Siguiente</button>
             </div>
         </div>
 
-        <!-- PASO 3: PAGO -->
+        <!-- PASO 3 -->
         <div id="step-3" class="step-section">
-            <h3>Pago</h3>
-            <div style="background: #F9FAFB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #E5E7EB;">
-                <input type="checkbox" id="same_data" onchange="copyShippingData()" style="width:auto; margin-right:10px;">
-                <label for="same_data" style="display:inline;">Usar mismos datos para factura</label>
-            </div>
+            <h3>Confirmación</h3>
+            <label style="display:flex;align-items:center;gap:10px;background:#f9fafb;padding:10px;border-radius:8px;margin-bottom:20px;">
+                <input type="checkbox" id="same_data" onchange="copyData()" style="width:20px"> Usar mismos datos factura
+            </label>
             <div class="form-grid">
-                <div><label>Nombres</label><input type="text" id="bill_name"></div>
-                <div><label>Apellidos</label><input type="text" id="bill_surname"></div>
-                <div><label>Identificación</label><input type="text" id="bill_id"></div>
-                <div><label>Celular</label><input type="tel" id="bill_phone"></div>
-                <div class="full-width"><label>Email</label><input type="email" id="bill_email"></div>
-                <div class="full-width"><label>Dirección</label><input type="text" id="bill_address"></div>
+                <input type="text" id="bill_name" placeholder="Nombres">
+                <input type="text" id="bill_surname" placeholder="Apellidos">
+                <input type="text" id="bill_id" placeholder="Identificación">
+                <input type="tel" id="bill_phone" placeholder="Celular">
+                <input type="email" id="bill_email" class="full-width" placeholder="Email">
+                <input type="text" id="bill_address" class="full-width" placeholder="Dirección completa">
             </div>
-            <div style="margin-top: 25px;">
-                <input type="checkbox" id="terms" required style="width:auto; margin-right:10px;">
-                <label for="terms" style="display:inline; color: var(--text-light); font-size:0.9rem;">Acepto el <a href="#" style="color:var(--primary)">tratamiento de datos</a>.</label>
+
+            <!-- SECCION LEGAL (CONFIGURABLE) -->
+            <div class="legal-check-group">
+                <label class="legal-item">
+                    <input type="checkbox" id="chk_terms">
+                    <span>He leído y acepto los <a href="#" id="link_terms" target="_blank">Términos y Condiciones</a>.</span>
+                </label>
+
+                <label class="legal-item">
+                    <input type="checkbox" id="chk_data">
+                    <span>Acepto la Política de <a href="#" id="link_data" target="_blank">Tratamiento de Datos Personales</a>.</span>
+                </label>
             </div>
+
             <div class="nav-buttons">
-                <button class="btn btn-secondary" onclick="prevStep(2)">← Atrás</button>
-                <button class="btn btn-success" onclick="processOrderCloudinary()">Finalizar Pedido</button>
+                <button class="btn btn-secondary" onclick="prevStep(2)">Atrás</button>
+                <button class="btn btn-success" onclick="processOrder()">Finalizar Pedido</button>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 
-<!-- EDITOR MODAL -->
+<!-- MODAL EDITOR -->
 <div class="modal" id="editorModal">
     <div class="editor-container">
-        <div class="editor-header">
-            <h3 style="margin:0; font-size: 1.1rem;">Editando Imán #<span id="currentSlotNum"></span></h3>
-            <button onclick="closeEditor()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
+        <div style="padding:15px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="margin:0">Editar Imán</h3>
+            <button onclick="closeEditor()" style="background:none;border:none;font-size:1.5rem;">&times;</button>
         </div>
 
         <div class="editor-body">
-            <div class="canvas-wrapper">
-                <canvas id="editorCanvas" width="300" height="300"></canvas>
+            <div class="panel-canvas">
+                <div class="canvas-wrapper">
+                    <canvas id="editorCanvas" width="300" height="300"></canvas>
+                    <div id="uploadOverlay" onclick="document.getElementById('imageUpload').click()">
+                        <span>📷</span>
+                        <p>Toca para subir</p>
+                    </div>
+                </div>
+                <p style="text-align:center;font-size:0.75rem;color:#666;margin-bottom:10px;">👆 Arrastra la foto para mover</p>
+                <input type="file" id="imageUpload" accept="image/*" style="display:none">
+                <button class="btn btn-upload" id="changePhotoBtn" onclick="document.getElementById('imageUpload').click()">
+                    📂 Cambiar Foto
+                </button>
             </div>
-            <p style="font-size: 0.8rem; text-align: center; margin-bottom: 20px; background: #f0fdf4; padding: 8px; border-radius: 6px; color: #166534;">
-                👆 <strong>Tip:</strong> Mueve la foto o el texto con el dedo.
-            </p>
 
-            <div class="controls-grid">
-                <div class="full-width">
-                    <label>1. Cambiar Foto</label>
-                    <input type="file" id="imageUpload" accept="image/*">
-                </div>
+            <div class="panel-controls">
+                <div class="controls-group">
+                    <div class="controls-title">Estilo</div>
+                    <label class="polaroid-toggle">
+                        <span style="display:flex;align-items:center;gap:5px;">📸 Modo Polaroid</span>
+                        <input type="checkbox" id="polaroidCheck" class="polaroid-check">
+                    </label>
 
-                <div class="full-width">
-                    <label>2. Zoom</label>
-                    <input type="range" id="zoomControl" min="0.5" max="2" step="0.10" value="1">
-                </div>
-
-                <div class="full-width" style="border-top: 1px solid #eee; padding-top: 15px;">
-                    <label>3. Texto</label>
-                    <input type="text" id="textInput" placeholder="Ej: Feliz Día">
-                </div>
-
-                <div>
-                    <label>Fuente</label>
-                    <select id="fontFamily">
-                        <option value="Arial">Arial</option>
-                        <option value="'Great Vibes', cursive">My Love</option>
-                        <option value="'Pacifico', cursive">Anastasia</option>
-                        <option value="'Fredoka', sans-serif">Moderna</option>
-                        <option value="'Inter', sans-serif">Simple</option>
-                        <option value="Times New Roman">Clásica</option>
-                        <option value="Impact">Negrita</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Color</label>
-                    <div style="display:flex; align-items:center; height:42px; border:1px solid var(--border); border-radius:8px; padding:0 5px;">
-                        <input type="color" id="fontColor" value="#ffffff" style="width:100%; height:30px; border:none; padding:0; background:none;">
+                    <div class="filters-scroll">
+                        <div class="filter-btn active" onclick="setFilter('none', this)">
+                            <img src="" class="filter-thumb" style="filter: none">
+                            <span class="filter-name">Normal</span>
+                        </div>
+                        <div class="filter-btn" onclick="setFilter('grayscale(100%)', this)">
+                            <img src="" class="filter-thumb" style="filter: grayscale(100%)">
+                            <span class="filter-name">B&N</span>
+                        </div>
+                        <div class="filter-btn" onclick="setFilter('sepia(100%)', this)">
+                            <img src="" class="filter-thumb" style="filter: sepia(100%)">
+                            <span class="filter-name">Sepia</span>
+                        </div>
+                        <div class="filter-btn" onclick="setFilter('contrast(150%)', this)">
+                            <img src="" class="filter-thumb" style="filter: contrast(150%)">
+                            <span class="filter-name">Alto</span>
+                        </div>
+                        <div class="filter-btn" onclick="setFilter('brightness(110%) saturate(120%)', this)">
+                            <img src="" class="filter-thumb" style="filter: brightness(110%) saturate(120%)">
+                            <span class="filter-name">Vivo</span>
+                        </div>
+                        <div class="filter-btn" onclick="setFilter('saturate(0.5)', this)">
+                            <img src="" class="filter-thumb" style="filter: saturate(0.5)">
+                            <span class="filter-name">Suave</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="full-width">
-                    <label>Tamaño Texto</label>
-                    <input type="range" id="fontSize" min="10" max="80" value="40">
+                <div class="controls-group">
+                    <div class="controls-title">Ajustes Imagen</div>
+                    <span class="slider-label">Zoom (Mínimo 1.0x - Máximo 3.0x)</span>
+                    <div class="slider-row">
+                        <div class="slider-icon">➖</div>
+                        <input type="range" id="zoomControl" min="1" max="3" step="0.05" value="1">
+                        <div class="slider-icon">➕</div>
+                    </div>
+
+                    <span class="slider-label">Rotación</span>
+                    <div class="slider-row">
+                        <div class="slider-icon">↺</div>
+                        <input type="range" id="rotateControl" min="-180" max="180" step="1" value="0">
+                        <div class="slider-icon">↻</div>
+                    </div>
                 </div>
+
+                <div class="controls-group" style="border:none;">
+                    <div class="controls-title">Texto</div>
+                    <input type="text" id="textInput" placeholder="Escribe algo..." style="margin-bottom:10px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <select id="fontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="'Great Vibes', cursive">Script</option>
+                            <option value="'Pacifico', cursive">Hand</option>
+                            <option value="'Fredoka', sans-serif">Round</option>
+                            <option value="Impact">Bold</option>
+                        </select>
+                        <input type="color" id="fontColor" value="#ffffff" style="height:40px;padding:0;">
+                    </div>
+
+                    <span class="slider-label">Tamaño Texto</span>
+                    <div class="slider-row">
+                        <div class="slider-icon" style="font-size:12px; padding-top:5px;">A</div>
+                        <input type="range" id="fontSize" min="10" max="80" value="30">
+                        <div class="slider-icon" style="font-size:22px;">A</div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="editor-footer">
-            <button class="btn-modal" style="background:#eee; color:#333" onclick="closeEditor()">Cancelar</button>
-            <button class="btn-modal" style="background:var(--secondary); color:white" onclick="saveSlot()">Guardar</button>
+            <button class="btn" style="background:#f3f4f6; color:#4b5563; border:1px solid #e5e7eb;" onclick="closeEditor()">Cancelar</button>
+            <button class="btn btn-success" onclick="saveSlot()">Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REFRI -->
+<div class="modal" id="fridgeModal">
+    <div style="position:relative;">
+        <button onclick="document.getElementById('fridgeModal').style.display='none'" style="position:absolute;top:-40px;right:0;color:white;background:none;border:none;font-size:2rem;cursor:pointer;">&times;</button>
+        <div class="fridge-bg" id="fridgeContent">
+            <div class="fridge-handle"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // ==========================================
-    //  1. CONFIGURACIÓN DE EMAILJS
-    // ==========================================
-    const EMAILJS_PUBLIC_KEY = "ain0jDyCXgCAFURqg";
-    const EMAILJS_SERVICE_ID = "service_gz97y8p";
-    const EMAILJS_TEMPLATE_ID = "template_k2u0fxd";
-
-    // ==========================================
-    //  2. CONFIGURACIÓN DE CLOUDINARY
-    // ==========================================
-    const CLOUDINARY_CLOUD_NAME = "dwtdqotop";
-    const CLOUDINARY_UPLOAD_PRESET = "imagen";
-    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-
-    const SHOP_CONFIG = {
-        whatsappNumber: "593986805369",
-        price: 16.00,
-        shippingCost: 3.00
+    // ============================================================
+    // CONFIGURACIÓN DE PDFS Y APIS (PON TUS DATOS AQUI)
+    // ============================================================
+    const CONFIG_PDFS = {
+        terms: "https://drive.google.com/file/d/1Gf-4_21Xtval0tYE8D9cTYoH7t8L09qR/view?usp=drive_link", // Poner URL real
+        data: "https://drive.google.com/file/d/12chapsZ4yIZH_5Bk11pGnGJ4rYYaxubB/view?usp=drive_link"         // Poner URL real
     };
 
-    (function(){ emailjs.init(EMAILJS_PUBLIC_KEY); })();
+    const EMAILJS_KEY = "ain0jDyCXgCAFURqg";
+    const EMAILJS_SERVICE = "service_gz97y8p";
+    const EMAILJS_TEMPLATE = "template_k2u0fxd";
+    const CLOUD_NAME = "dwtdqotop";
+    const CLOUD_PRESET = "imagen";
+    const SHOP_WA = "593986805369";
 
-    // --- ESTADO GLOBAL ---
+    // ============================================================
+
+    (function(){ emailjs.init(EMAILJS_KEY); })();
+
+    // Init Links
+    document.getElementById('link_terms').href = CONFIG_PDFS.terms;
+    document.getElementById('link_data').href = CONFIG_PDFS.data;
+
     let slots = new Array(8).fill(null);
-    let currentSlotIndex = -1;
-    let imgObject = new Image();
-    let canvas = document.getElementById('editorCanvas');
-    let ctx = canvas.getContext('2d');
+    let currentSlot = -1;
+    let imgObj = new Image();
+    let cvs = document.getElementById('editorCanvas');
+    let ctx = cvs.getContext('2d');
 
-    let defaultState = {
-        x: 0, y: 0, scale: 1,
-        text: "", fontSize: 40, fontFamily: "Arial", color: "#ffffff",
-        textX: 150, textY: 150,
-        draggingTarget: null, lastX: 0, lastY: 0
+    let state = {
+        x:0, y:0, baseScale:1, zoomLevel:1, rot:0,
+        txt:"", txtX:150, txtY:250, font:"Arial", size:30, color:"#fff",
+        filter: "none", isPolaroid: false, dragItem: null, lastX:0, lastY:0
     };
-    let editorState = { ...defaultState };
 
-    window.onload = function() { renderGrid(); };
+    window.onload = renderGrid;
 
     function renderGrid() {
-        const container = document.getElementById('gridImanes');
-        container.innerHTML = '';
-        slots.forEach((slot, index) => {
+        const el = document.getElementById('gridImanes');
+        el.innerHTML = '';
+        slots.forEach((s, i) => {
             const div = document.createElement('div');
-            div.className = `iman-slot ${slot ? 'filled' : ''}`;
-            div.onclick = () => openEditor(index);
-            if (slot) {
-                const img = document.createElement('img');
-                img.src = slot.previewData;
-                div.appendChild(img);
-            } else {
-                div.innerHTML = `
-                    <div style="font-size:2rem; color:#D1D5DB; line-height:1;">+</div>
-                    <small style="color:#6B7280; font-size:0.75rem; margin-top:5px;">Foto ${index + 1}</small>
-                `;
-            }
-            container.appendChild(div);
+            div.className = `iman-slot ${s ? 'filled' : ''}`;
+            div.onclick = () => edit(i);
+            if(s) div.innerHTML = `<img src="${s.preview}">`;
+            else div.innerHTML = `<span style="font-size:2rem;color:#ccc">+</span>`;
+            el.appendChild(div);
         });
-        checkStep1Validity();
+        checkNext();
     }
 
-    function openEditor(index) {
-        currentSlotIndex = index;
-        document.getElementById('currentSlotNum').innerText = index + 1;
+    function edit(i) {
+        currentSlot = i;
         document.getElementById('editorModal').style.display = 'flex';
-        if (slots[index]) {
-            imgObject.src = slots[index].originalSrc;
-            editorState = { ...slots[index].editorState };
-            if(editorState.textX === undefined) editorState.textX = 150;
-            if(editorState.textY === undefined) editorState.textY = 150;
-            loadControls();
+
+        if(slots[i]) {
+            imgObj.src = slots[i].raw;
+            state = {...slots[i].state};
+            document.getElementById('changePhotoBtn').style.display = 'inline-flex';
+            document.getElementById('uploadOverlay').style.display = 'none';
+            updateControls();
+            updateFilterThumbnails(imgObj.src);
         } else {
-            resetEditor();
+            resetState();
+            imgObj.src = "";
+            document.getElementById('changePhotoBtn').style.display = 'none';
+            document.getElementById('uploadOverlay').style.display = 'flex';
+            ctx.clearRect(0,0,300,300);
+            ctx.fillStyle="#111"; ctx.fillRect(0,0,300,300);
+            updateFilterThumbnails("");
         }
     }
 
-    function closeEditor() { document.getElementById('editorModal').style.display = 'none'; }
-
-    function resetEditor() {
-        imgObject = new Image(); imgObject.src = "";
-        editorState = { ...defaultState };
-        document.getElementById('imageUpload').value = "";
-        document.getElementById('textInput').value = "";
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#000000"; ctx.fillRect(0,0,canvas.width, canvas.height);
-        ctx.font = "bold 16px Inter"; ctx.fillStyle="#666"; ctx.textAlign="center";
-        ctx.fillText("Sube una foto", 150, 140);
-        ctx.font = "30px Inter"; ctx.fillText("📷", 150, 180);
+    function updateFilterThumbnails(src) {
+        const thumbs = document.querySelectorAll('.filter-thumb');
+        const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='12' fill='%23999' text-anchor='middle' dy='.3em'%3ESin Foto%3C/text%3E%3C/svg%3E";
+        thumbs.forEach(img => img.src = src && src !== "" ? src : placeholder);
     }
 
-    function loadControls() {
-        document.getElementById('zoomControl').value = editorState.scale;
-        document.getElementById('textInput').value = editorState.text;
-        document.getElementById('fontSize').value = editorState.fontSize;
-        document.getElementById('fontFamily').value = editorState.fontFamily;
-        document.getElementById('fontColor').value = editorState.color;
+    function resetState() {
+        state = { x:0, y:0, baseScale:1, zoomLevel:1, rot:0, txt:"", txtX:150, txtY:260, font:"Arial", size:30, color:"#ffffff", filter: "none", isPolaroid: false, dragItem: null, lastX:0, lastY:0 };
     }
 
-    function drawCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        if (imgObject.src) {
-            ctx.save();
-            ctx.translate(canvas.width/2, canvas.height/2);
-            ctx.scale(editorState.scale, editorState.scale);
-            ctx.translate(-canvas.width/2, -canvas.height/2);
-            ctx.drawImage(imgObject, editorState.x, editorState.y);
-            ctx.restore();
-        }
-
-        if (editorState.text) {
-            ctx.save();
-            ctx.font = `${editorState.fontSize}px ${editorState.fontFamily}`;
-            ctx.fillStyle = editorState.color;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(editorState.text, editorState.textX, editorState.textY);
-            ctx.restore();
-        }
-    }
-
-    document.getElementById('imageUpload').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if(file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                imgObject = new Image();
-                imgObject.onload = () => {
-                    const ratioW = canvas.width / imgObject.width;
-                    const ratioH = canvas.height / imgObject.height;
-                    let newScale = Math.max(ratioW, ratioH) * 1.1;
-                    editorState.scale = newScale;
-                    document.getElementById('zoomControl').value = newScale;
-                    editorState.x = (canvas.width - imgObject.width) / 2;
-                    editorState.y = (canvas.height - imgObject.height) / 2;
-                    drawCanvas();
-                };
-                imgObject.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    ['zoomControl', 'textInput', 'fontSize', 'fontFamily', 'fontColor'].forEach(id => {
-        document.getElementById(id).addEventListener('input', (e) => {
-            if (id === 'zoomControl') editorState.scale = parseFloat(e.target.value);
-            if (id === 'textInput') {
-                editorState.text = e.target.value;
-                if(editorState.text && editorState.textX === 0) {
-                    editorState.textX = canvas.width / 2;
-                    editorState.textY = canvas.height / 2;
-                }
-            }
-            if (id === 'fontSize') editorState.fontSize = parseInt(e.target.value);
-            if (id === 'fontFamily') editorState.fontFamily = e.target.value;
-            if (id === 'fontColor') editorState.color = e.target.value;
-            drawCanvas();
+    function updateControls() {
+        document.getElementById('zoomControl').value = state.zoomLevel;
+        document.getElementById('rotateControl').value = state.rot;
+        document.getElementById('textInput').value = state.txt;
+        document.getElementById('fontFamily').value = state.font;
+        document.getElementById('fontSize').value = state.size;
+        document.getElementById('fontColor').value = state.color;
+        document.getElementById('polaroidCheck').checked = state.isPolaroid;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.getAttribute('onclick').includes(state.filter)) btn.classList.add('active');
         });
+    }
+
+    function draw() {
+        ctx.clearRect(0,0,300,300);
+        ctx.fillStyle = state.isPolaroid ? "#ffffff" : "#000000";
+        ctx.fillRect(0,0,300,300);
+
+        if(imgObj.src) {
+            ctx.save();
+            ctx.filter = state.filter;
+            ctx.translate(150, 150);
+            ctx.rotate(state.rot * Math.PI/180);
+            const effectiveScale = state.baseScale * state.zoomLevel;
+            ctx.scale(effectiveScale, effectiveScale);
+            ctx.translate(-150, -150);
+
+            if(state.isPolaroid) {
+                ctx.drawImage(imgObj, state.x, state.y);
+                ctx.restore();
+                ctx.save();
+                ctx.fillStyle = "white";
+                ctx.fillRect(0,0, 20, 300);
+                ctx.fillRect(280,0, 20, 300);
+                ctx.fillRect(0,0, 300, 20);
+                ctx.fillRect(0, 240, 300, 60);
+            } else {
+                ctx.drawImage(imgObj, state.x, state.y);
+                ctx.restore();
+            }
+        }
+
+        if(state.txt) {
+            ctx.save();
+            ctx.font = `${state.size}px ${state.font}`;
+            ctx.fillStyle = state.color;
+            if(!state.isPolaroid) { ctx.shadowColor="black"; ctx.shadowBlur=4; }
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillText(state.txt, state.txtX, state.txtY);
+            ctx.restore();
+        }
+    }
+
+    document.getElementById('imageUpload').onchange = function(e) {
+        const f = e.target.files[0];
+        if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => {
+            imgObj = new Image();
+            imgObj.onload = () => {
+                const ratio = Math.max(300/imgObj.width, 300/imgObj.height) * 1.02;
+                state.baseScale = ratio;
+                state.zoomLevel = 1;
+                state.rot = 0;
+                state.x = (300 - imgObj.width)/2;
+                state.y = (300 - imgObj.height)/2;
+                document.getElementById('changePhotoBtn').style.display = 'inline-flex';
+                document.getElementById('uploadOverlay').style.display = 'none';
+                updateControls();
+                updateFilterThumbnails(imgObj.src);
+                draw();
+            };
+            imgObj.src = ev.target.result;
+        };
+        r.readAsDataURL(f);
+    };
+
+    const inputs = ['zoomControl','rotateControl','textInput','fontSize','fontFamily','fontColor','polaroidCheck'];
+    inputs.forEach(id => {
+        document.getElementById(id).oninput = (e) => {
+            const val = e.target.value;
+            if(id==='zoomControl') state.zoomLevel = parseFloat(val);
+            if(id==='rotateControl') state.rot = parseInt(val);
+            if(id==='textInput') state.txt = val;
+            if(id==='fontSize') state.size = parseInt(val);
+            if(id==='fontFamily') state.font = val;
+            if(id==='fontColor') state.color = val;
+            if(id==='polaroidCheck') {
+                state.isPolaroid = e.target.checked;
+                if(state.isPolaroid) state.txtY = 270;
+            }
+            draw();
+        };
     });
 
-    // --- TOUCH & MOUSE LOGIC ---
-    function getPointerPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+    window.setFilter = (f, btn) => { state.filter = f; updateControls(); draw(); };
+
+    function getPos(e) {
+        const r = cvs.getBoundingClientRect();
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const scaleX = 300 / r.width;
+        const scaleY = 300 / r.height;
+        return { x: (x-r.left)*scaleX, y: (y-r.top)*scaleY };
     }
 
     function handleStart(e) {
-        if(e.type === 'touchstart') e.preventDefault();
-        const pos = getPointerPos(e);
-        editorState.lastX = pos.x;
-        editorState.lastY = pos.y;
+        if (document.getElementById('uploadOverlay').style.display !== 'none') return;
 
-        let hitText = false;
-        if (editorState.text) {
-            ctx.font = `${editorState.fontSize}px ${editorState.fontFamily}`;
-            const metrics = ctx.measureText(editorState.text);
-            const txtW = metrics.width;
-            const txtH = editorState.fontSize;
-            const left = editorState.textX - txtW/2 - 20;
-            const right = editorState.textX + txtW/2 + 20;
-            const top = editorState.textY - txtH/2 - 20;
-            const bottom = editorState.textY + txtH/2 + 20;
-            if (pos.x >= left && pos.x <= right && pos.y >= top && pos.y <= bottom) hitText = true;
+        if(e.type==='touchstart') e.preventDefault();
+        const p = getPos(e);
+        state.lastX = p.x; state.lastY = p.y;
+
+        const distTxt = Math.hypot(p.x - state.txtX, p.y - state.txtY);
+        if(state.txt && distTxt < 50) state.dragItem = 'txt';
+        else state.dragItem = 'img';
+    }
+
+    function move(e) {
+        if(!state.dragItem) return;
+        if(e.type==='touchmove') e.preventDefault();
+
+        const p = getPos(e);
+        const dx = p.x - state.lastX;
+        const dy = p.y - state.lastY;
+
+        if(state.dragItem === 'txt') {
+            state.txtX += dx;
+            state.txtY += dy;
+        }
+        else {
+            const rad = state.rot * Math.PI / 180;
+            const sin = Math.sin(rad);
+            const cos = Math.cos(rad);
+            const effectiveScale = state.baseScale * state.zoomLevel;
+            state.x += (dx * cos + dy * sin) / effectiveScale;
+            state.y += (dy * cos - dx * sin) / effectiveScale;
         }
 
-        if (hitText) editorState.draggingTarget = 'text';
-        else if (imgObject.src) editorState.draggingTarget = 'image';
-        else editorState.draggingTarget = null;
+        state.lastX = p.x;
+        state.lastY = p.y;
+        draw();
     }
 
-    function handleMove(e) {
-        if (!editorState.draggingTarget) return;
-        if(e.type === 'touchmove') e.preventDefault();
-        const pos = getPointerPos(e);
-        const dx = pos.x - editorState.lastX;
-        const dy = pos.y - editorState.lastY;
-        if (editorState.draggingTarget === 'text') { editorState.textX += dx; editorState.textY += dy; }
-        else if (editorState.draggingTarget === 'image') { editorState.x += dx; editorState.y += dy; }
-        editorState.lastX = pos.x;
-        editorState.lastY = pos.y;
-        drawCanvas();
-    }
+    cvs.addEventListener('mousedown', handleStart);
+    cvs.addEventListener('touchstart', handleStart, {passive:false});
+    cvs.addEventListener('mousemove', move);
+    cvs.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('mouseup', ()=>state.dragItem=null);
+    window.addEventListener('touchend', ()=>state.dragItem=null);
 
-    function handleEnd(e) { editorState.draggingTarget = null; }
+    window.saveSlot = () => {
+        if(!imgObj.src || imgObj.src === "") return alert("⚠️ Debes cargar una foto antes de guardar");
+        const data = cvs.toDataURL('image/jpeg', 0.9);
+        slots[currentSlot] = { preview: data, raw: imgObj.src, state: {...state} };
+        document.getElementById('editorModal').style.display='none';
+        renderGrid();
+    };
+    window.closeEditor = () => document.getElementById('editorModal').style.display='none';
 
-    canvas.addEventListener('mousedown', handleStart);
-    canvas.addEventListener('touchstart', handleStart, {passive: false});
-    canvas.addEventListener('mousemove', handleMove);
-    canvas.addEventListener('touchmove', handleMove, {passive: false});
-    window.addEventListener('mouseup', handleEnd);
-    window.addEventListener('touchend', handleEnd);
-
-    function saveSlot() {
-        if (!imgObject.src) return alert("Carga una imagen primero");
-        const finalImage = canvas.toDataURL('image/jpeg', 1.0);
-        slots[currentSlotIndex] = { previewData: finalImage, originalSrc: imgObject.src, editorState: { ...editorState } };
-        closeEditor(); renderGrid();
-    }
-
-    function checkStep1Validity() {
-        const btn = document.getElementById('btnNext1');
-        const count = slots.filter(s => s).length;
-        btn.disabled = count !== 8;
-        btn.innerHTML = count === 8 ? 'Siguiente →' : `Faltan ${8 - count}`;
-        btn.style.opacity = count !== 8 ? "0.6" : "1";
-    }
-
-    function nextStep(n) {
-        document.querySelectorAll('.step-section').forEach(el => el.classList.remove('active'));
-        document.getElementById(`step-${n}`).classList.add('active');
-        window.scrollTo({top:0, behavior: 'smooth'});
-        for(let i=1; i<=3; i++) {
-            const el = document.getElementById(`step-indicator-${i}`);
-            el.className = `stepper-item ${i === n ? 'active' : (i < n ? 'completed' : '')}`;
-        }
-    }
-    function prevStep(n) { nextStep(n); }
-
-    function validateAndNext(n) {
-        if (n === 2) {
-            let valid = true;
-            ['ship_name','ship_surname','ship_id','ship_phone','ship_email','ship_address'].forEach(id => {
-                const el = document.getElementById(id);
-                if(!el.value) { el.style.borderColor = "#EF4444"; valid = false; }
-                else el.style.borderColor = "#E5E7EB";
-            });
-            if(valid) nextStep(3); else alert("Por favor completa los campos obligatorios.");
-        }
-    }
-
-    function copyShippingData() {
-        const checked = document.getElementById('same_data').checked;
-        ['name','surname','id','phone','email','address'].forEach(f => {
-            const val = document.getElementById(`ship_${f}`).value;
-            const target = document.getElementById(`bill_${f}`);
-            if(checked) { target.value = val; target.readOnly = true; target.style.background = "#F3F4F6"; }
-            else { target.value = ""; target.readOnly = false; target.style.background = "#fff"; }
+    window.openFridgePreview = () => {
+        const c = document.getElementById('fridgeContent');
+        c.innerHTML = '<div class="fridge-handle"></div>';
+        slots.forEach(s => {
+            if(s) {
+                const img = document.createElement('img');
+                img.src = s.preview;
+                img.className = 'fridge-magnet';
+                c.appendChild(img);
+            }
         });
+        document.getElementById('fridgeModal').style.display = 'flex';
+    };
+
+    window.checkNext = () => {
+        const n = slots.filter(x=>x).length;
+        const b = document.getElementById('btnNext1');
+        b.disabled = n!==8;
+        b.innerHTML = n===8 ? "Siguiente ➜" : `Faltan ${8-n}`;
+    };
+
+    window.nextStep = (n) => {
+        document.querySelectorAll('.step-section').forEach(d=>d.classList.remove('active'));
+        document.getElementById(`step-${n}`).classList.add('active');
+        document.querySelectorAll('.stepper-item').forEach((el,i) => {
+            el.classList.remove('active','completed');
+            if(i+1 === n) el.classList.add('active');
+            if(i+1 < n) el.classList.add('completed');
+        });
+    };
+    window.prevStep = (n) => window.nextStep(n);
+
+    window.validateAndNext = (n) => {
+        const requiredIds = ['ship_name', 'ship_surname', 'ship_id', 'ship_phone', 'ship_email', 'ship_street', 'ship_number', 'ship_intersection'];
+        let valid = true;
+
+        requiredIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el && !el.value.trim()) {
+                el.classList.add('input-error');
+                valid = false;
+            } else if (el) {
+                el.classList.remove('input-error');
+            }
+        });
+
+        if(valid) window.nextStep(n);
+    };
+
+    window.copyData = () => {
+        if(document.getElementById('same_data').checked) {
+            ['name','surname','id','phone','email'].forEach(k => {
+                document.getElementById(`bill_${k}`).value = document.getElementById(`ship_${k}`).value;
+            });
+            const street = document.getElementById('ship_street').value;
+            const num = document.getElementById('ship_number').value;
+            const inter = document.getElementById('ship_intersection').value;
+            document.getElementById('bill_address').value = `${street} #${num} y ${inter}`;
+        }
+    };
+
+    async function upload(b64) {
+        const fd = new FormData();
+        fd.append('file', b64);
+        fd.append('upload_preset', CLOUD_PRESET);
+        try {
+            const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST', body:fd});
+            const d = await r.json();
+            return d.secure_url;
+        } catch(e) { return null; }
     }
 
-    async function uploadToCloudinary(base64Image) {
-        const formData = new FormData();
-        formData.append("file", base64Image);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    window.processOrder = async () => {
+        if (!document.getElementById('chk_terms').checked) return alert("Debes aceptar los Términos y Condiciones");
+        if (!document.getElementById('chk_data').checked) return alert("Debes aceptar el Tratamiento de Datos Personales");
+
+        document.getElementById('loader').style.display = 'flex';
         try {
-            const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
-            if(!response.ok) throw new Error("Error Cloudinary");
-            const data = await response.json();
-            return data.secure_url;
-        } catch (error) { console.error(error); return null; }
-    }
+            const urls = await Promise.all(slots.map(s => upload(s.preview)));
+            if(urls.some(u => !u)) throw new Error("Error subiendo imágenes");
 
-    async function processOrderCloudinary() {
-        const required = ['bill_name', 'bill_surname', 'bill_id', 'bill_email', 'bill_phone', 'bill_address'];
-        if (required.some(id => !document.getElementById(id).value)) return alert("Completa la facturación");
-        if (!document.getElementById('terms').checked) return alert("Acepta términos");
+            const fullAddress = `${document.getElementById('ship_street').value} #${document.getElementById('ship_number').value} y ${document.getElementById('ship_intersection').value}. (${document.getElementById('ship_comments').value})`;
 
-        const loader = document.getElementById('loader');
-        loader.style.display = 'flex';
-
-        const nombre = document.getElementById('ship_name').value + " " + document.getElementById('ship_surname').value;
-        const email = document.getElementById('ship_email').value;
-        const total = (SHOP_CONFIG.price + SHOP_CONFIG.shippingCost).toFixed(2);
-
-        try {
-            const uploadPromises = slots.map(async (slot) => await uploadToCloudinary(slot.previewData));
-            const imageUrls = await Promise.all(uploadPromises);
-
-            if(imageUrls.some(url => url === null)) throw new Error("Fallo subida de imágenes");
-
-            const templateParams = {
-                cust_name: nombre, cust_surname: document.getElementById('ship_surname').value,
-                cust_email: email, cust_phone: document.getElementById('ship_phone').value,
-                cust_address: document.getElementById('ship_address').value,
-                total_price: "$" + total,
-                img1_link: imageUrls[0], img2_link: imageUrls[1], img3_link: imageUrls[2], img4_link: imageUrls[3],
-                img5_link: imageUrls[4], img6_link: imageUrls[5], img7_link: imageUrls[6], img8_link: imageUrls[7]
+            const p = {
+                cust_name: document.getElementById('ship_name').value,
+                cust_surname: document.getElementById('ship_surname').value,
+                cust_phone: document.getElementById('ship_phone').value,
+                cust_address: fullAddress,
+                total_price: "$" + 19.00,
+                img1_link: urls[0], img2_link: urls[1], img3_link: urls[2], img4_link: urls[3],
+                img5_link: urls[4], img6_link: urls[5], img7_link: urls[6], img8_link: urls[7]
             };
 
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+            await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, p);
 
-            // OCULTAR LOADER Y MOSTRAR PANTALLA DE EXITO
-            loader.style.display = 'none';
-
-            // Generar link de WhatsApp
-            const msjWA = `Hola, soy ${nombre}. Ya realicé mi pedido de 8 imanes (Total $${total}). Las imágenes fueron enviadas a su sistema. Quedo atento para el pago.`;
-            const urlWA = `https://api.whatsapp.com/send?phone=${SHOP_CONFIG.whatsappNumber}&text=${encodeURIComponent(msjWA)}`;
-
-            // Configurar botón final
-            document.getElementById('finalWhatsappLink').href = urlWA;
-
-            // Cambiar Vistas
-            document.getElementById('mainForm').style.display = 'none';
-            document.getElementById('headerSection').style.display = 'none';
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('mainWrapper').style.display = 'none';
             document.getElementById('successSection').style.display = 'block';
 
-            // Intentar abrir automáticamente (por si acaso funciona en desktop)
-            window.location.href = urlWA;
+            const wa = `Hola, soy ${p.cust_name}. Ya realicé mi pedido de 8 imanes. Las imágenes fueron enviadas a su sistema. Quedo atento para el pago.`;
+            document.getElementById('finalWhatsappLink').href = `https://api.whatsapp.com/send?phone=${SHOP_WA}&text=${encodeURIComponent(wa)}`;
 
-        } catch (error) {
-            loader.style.display = 'none';
-            alert("Hubo un error: " + error.message);
+        } catch(e) {
+            document.getElementById('loader').style.display = 'none';
+            alert("Error: " + e.message);
         }
-    }
+    };
 </script>
-
 </body>
 </html>
