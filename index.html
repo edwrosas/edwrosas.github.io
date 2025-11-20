@@ -69,10 +69,14 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
         label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; display: block; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; }
+
+        input, select, textarea {
+            width: 100%; padding: 10px; border: 1px solid var(--border);
+            border-radius: 8px; font-family: inherit; font-size: 1rem;
+        }
         .input-error { border-color: var(--error) !important; background-color: #FEF2F2; }
 
-        /* CHECKBOXES LEGALES */
+        /* LEGAL */
         .legal-check-group { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
         .legal-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: #4B5563; }
         .legal-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); cursor: pointer; }
@@ -110,6 +114,50 @@
         }
         #uploadOverlay span { font-size: 3rem; display: block; margin-bottom: 10px; }
 
+        /* --- ACORDEON (NUEVO CSS) --- */
+        .accordion-item {
+            border-bottom: 1px solid #f3f4f6;
+            margin-bottom: 5px;
+        }
+
+        .accordion-header {
+            padding: 15px 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #4B5563;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            transition: color 0.3s;
+        }
+
+        .accordion-header:hover { color: var(--primary); }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #9CA3AF;
+            transition: transform 0.3s;
+        }
+
+        .accordion-item.active .accordion-header { color: var(--primary); }
+        .accordion-item.active .accordion-header::after { content: '−'; color: var(--primary); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            padding: 0 5px;
+        }
+
+        .accordion-item.active .accordion-content {
+            padding-bottom: 20px;
+            /* max-height se asigna via JS */
+        }
+
         /* SLIDERS */
         .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .slider-icon { font-size: 1.2rem; color: #6b7280; width: 25px; text-align: center; font-weight: bold; }
@@ -117,10 +165,6 @@
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 30px; cursor: pointer; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #E5E7EB; border-radius: 10px; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--primary); margin-top: -7px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-
-        /* CONTROLES */
-        .controls-group { margin-bottom: 20px; border-bottom: 1px solid #f3f4f6; padding-bottom: 15px; }
-        .controls-title { font-size: 0.8rem; text-transform: uppercase; color: #9ca3af; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; }
 
         /* FILTROS GRID */
         .filters-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; width: 100%; }
@@ -199,7 +243,7 @@
             </div>
         </div>
 
-        <!-- PASO 2 -->
+        <!-- PASO 2: DATOS DE ENTREGA -->
         <div id="step-2" class="step-section">
             <h3>Datos de Entrega</h3>
             <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">* Campos obligatorios</p>
@@ -237,7 +281,6 @@
                 <input type="text" id="bill_address" class="full-width" placeholder="Dirección completa">
             </div>
 
-            <!-- SECCION LEGAL (CONFIGURABLE) -->
             <div class="legal-check-group">
                 <label class="legal-item">
                     <input type="checkbox" id="chk_terms">
@@ -258,7 +301,7 @@
     </div>
 </div>
 
-<!-- MODAL EDITOR -->
+<!-- MODAL EDITOR CON ACORDEÓN -->
 <div class="modal" id="editorModal">
     <div class="editor-container">
         <div style="padding:15px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
@@ -283,77 +326,85 @@
             </div>
 
             <div class="panel-controls">
-                <div class="controls-group">
-                    <div class="controls-title">Estilo</div>
-                    <label class="polaroid-toggle">
-                        <span style="display:flex;align-items:center;gap:5px;">📸 Modo Polaroid</span>
-                        <input type="checkbox" id="polaroidCheck" class="polaroid-check">
-                    </label>
 
-                    <div class="filters-scroll">
-                        <div class="filter-btn active" onclick="setFilter('none', this)">
-                            <img src="" class="filter-thumb" style="filter: none">
-                            <span class="filter-name">Normal</span>
-                        </div>
-                        <div class="filter-btn" onclick="setFilter('grayscale(100%)', this)">
-                            <img src="" class="filter-thumb" style="filter: grayscale(100%)">
-                            <span class="filter-name">B&N</span>
-                        </div>
-                        <div class="filter-btn" onclick="setFilter('sepia(100%)', this)">
-                            <img src="" class="filter-thumb" style="filter: sepia(100%)">
-                            <span class="filter-name">Sepia</span>
-                        </div>
-                        <div class="filter-btn" onclick="setFilter('contrast(150%)', this)">
-                            <img src="" class="filter-thumb" style="filter: contrast(150%)">
-                            <span class="filter-name">Alto</span>
-                        </div>
-                        <div class="filter-btn" onclick="setFilter('brightness(110%) saturate(120%)', this)">
-                            <img src="" class="filter-thumb" style="filter: brightness(110%) saturate(120%)">
-                            <span class="filter-name">Vivo</span>
-                        </div>
-                        <div class="filter-btn" onclick="setFilter('saturate(0.5)', this)">
-                            <img src="" class="filter-thumb" style="filter: saturate(0.5)">
-                            <span class="filter-name">Suave</span>
+                <!-- ACORDEÓN 1: ESTILO -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Estilo</div>
+                    <div class="accordion-content">
+                        <label class="polaroid-toggle">
+                            <span style="display:flex;align-items:center;gap:5px;">📸 Modo Polaroid</span>
+                            <input type="checkbox" id="polaroidCheck" class="polaroid-check">
+                        </label>
+                        <div class="filters-scroll">
+                            <div class="filter-btn active" onclick="setFilter('none', this)">
+                                <img src="" class="filter-thumb" style="filter: none">
+                                <span class="filter-name">Normal</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('grayscale(100%)', this)">
+                                <img src="" class="filter-thumb" style="filter: grayscale(100%)">
+                                <span class="filter-name">B&N</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('sepia(100%)', this)">
+                                <img src="" class="filter-thumb" style="filter: sepia(100%)">
+                                <span class="filter-name">Sepia</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('contrast(150%)', this)">
+                                <img src="" class="filter-thumb" style="filter: contrast(150%)">
+                                <span class="filter-name">Alto</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('brightness(110%) saturate(120%)', this)">
+                                <img src="" class="filter-thumb" style="filter: brightness(110%) saturate(120%)">
+                                <span class="filter-name">Vivo</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('saturate(0.5)', this)">
+                                <img src="" class="filter-thumb" style="filter: saturate(0.5)">
+                                <span class="filter-name">Suave</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="controls-group">
-                    <div class="controls-title">Ajustes Imagen</div>
-                    <span class="slider-label">Zoom (Mínimo 1.0x - Máximo 3.0x)</span>
-                    <div class="slider-row">
-                        <div class="slider-icon">➖</div>
-                        <input type="range" id="zoomControl" min="1" max="3" step="0.05" value="1">
-                        <div class="slider-icon">➕</div>
-                    </div>
+                <!-- ACORDEÓN 2: AJUSTES IMAGEN -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Ajustes Imagen</div>
+                    <div class="accordion-content">
+                        <span class="slider-label">Zoom (1.0x - 3.0x)</span>
+                        <div class="slider-row">
+                            <div class="slider-icon">➖</div>
+                            <input type="range" id="zoomControl" min="1" max="3" step="0.05" value="1">
+                            <div class="slider-icon">➕</div>
+                        </div>
 
-                    <span class="slider-label">Rotación</span>
-                    <div class="slider-row">
-                        <div class="slider-icon">↺</div>
-                        <input type="range" id="rotateControl" min="-180" max="180" step="1" value="0">
-                        <div class="slider-icon">↻</div>
+                        <span class="slider-label">Rotación</span>
+                        <div class="slider-row">
+                            <div class="slider-icon">↺</div>
+                            <input type="range" id="rotateControl" min="-180" max="180" step="1" value="0">
+                            <div class="slider-icon">↻</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="controls-group" style="border:none;">
-                    <div class="controls-title">Texto</div>
-                    <input type="text" id="textInput" placeholder="Escribe algo..." style="margin-bottom:10px;">
-                    <div style="display:grid;grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-                        <select id="fontFamily">
-                            <option value="Arial">Arial</option>
-                            <option value="'Great Vibes', cursive">Script</option>
-                            <option value="'Pacifico', cursive">Hand</option>
-                            <option value="'Fredoka', sans-serif">Round</option>
-                            <option value="Impact">Bold</option>
-                        </select>
-                        <input type="color" id="fontColor" value="#ffffff" style="height:40px;padding:0;">
-                    </div>
-
-                    <span class="slider-label">Tamaño Texto</span>
-                    <div class="slider-row">
-                        <div class="slider-icon" style="font-size:12px; padding-top:5px;">A</div>
-                        <input type="range" id="fontSize" min="10" max="80" value="30">
-                        <div class="slider-icon" style="font-size:22px;">A</div>
+                <!-- ACORDEÓN 3: TEXTO -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Texto</div>
+                    <div class="accordion-content">
+                        <input type="text" id="textInput" placeholder="Escribe algo..." style="margin-bottom:10px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                            <select id="fontFamily">
+                                <option value="Arial">Arial</option>
+                                <option value="'Great Vibes', cursive">Script</option>
+                                <option value="'Pacifico', cursive">Hand</option>
+                                <option value="'Fredoka', sans-serif">Round</option>
+                                <option value="Impact">Bold</option>
+                            </select>
+                            <input type="color" id="fontColor" value="#ffffff" style="height:40px;padding:0;">
+                        </div>
+                        <span class="slider-label">Tamaño Texto</span>
+                        <div class="slider-row">
+                            <div class="slider-icon" style="font-size:12px; padding-top:5px;">A</div>
+                            <input type="range" id="fontSize" min="10" max="80" value="30">
+                            <div class="slider-icon" style="font-size:22px;">A</div>
+                        </div>
                     </div>
                 </div>
 
@@ -379,25 +430,23 @@
 
 <script>
     // ============================================================
-    // CONFIGURACIÓN DE PDFS Y APIS (PON TUS DATOS AQUI)
+    // CONFIGURACIÓN
     // ============================================================
     const CONFIG_PDFS = {
-        terms: "https://drive.google.com/file/d/1Gf-4_21Xtval0tYE8D9cTYoH7t8L09qR/view?usp=drive_link", // Poner URL real
-        data: "https://drive.google.com/file/d/12chapsZ4yIZH_5Bk11pGnGJ4rYYaxubB/view?usp=drive_link"         // Poner URL real
+        terms: "https://tu-sitio-web.com/terminos-y-condiciones.pdf",
+        data: "https://tu-sitio-web.com/tratamiento-datos.pdf"
     };
 
-    const EMAILJS_KEY = "ain0jDyCXgCAFURqg";
-    const EMAILJS_SERVICE = "service_gz97y8p";
-    const EMAILJS_TEMPLATE = "template_k2u0fxd";
-    const CLOUD_NAME = "dwtdqotop";
-    const CLOUD_PRESET = "imagen";
-    const SHOP_WA = "593986805369";
+    const EMAILJS_KEY = "PON_TU_PUBLIC_KEY";
+    const EMAILJS_SERVICE = "PON_TU_SERVICE_ID";
+    const EMAILJS_TEMPLATE = "PON_TU_TEMPLATE_ID";
+    const CLOUD_NAME = "PON_TU_CLOUD_NAME";
+    const CLOUD_PRESET = "PON_TU_UPLOAD_PRESET";
+    const SHOP_WA = "593999999999";
 
     // ============================================================
 
     (function(){ emailjs.init(EMAILJS_KEY); })();
-
-    // Init Links
     document.getElementById('link_terms').href = CONFIG_PDFS.terms;
     document.getElementById('link_data').href = CONFIG_PDFS.data;
 
@@ -413,7 +462,30 @@
         filter: "none", isPolaroid: false, dragItem: null, lastX:0, lastY:0
     };
 
-    window.onload = renderGrid;
+    window.onload = function() {
+        renderGrid();
+        // Inicializar acordeón: abrir el primero por defecto?
+        // No, por defecto cerrados según requerimiento.
+    };
+
+    // --- LÓGICA ACORDEÓN ---
+    window.toggleAccordion = function(header) {
+        const item = header.parentElement;
+        const isActive = item.classList.contains('active');
+
+        // 1. Cerrar todos
+        document.querySelectorAll('.accordion-item').forEach(i => {
+            i.classList.remove('active');
+            i.querySelector('.accordion-content').style.maxHeight = null;
+        });
+
+        // 2. Abrir el clickeado si no estaba abierto
+        if (!isActive) {
+            item.classList.add('active');
+            const content = item.querySelector('.accordion-content');
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    };
 
     function renderGrid() {
         const el = document.getElementById('gridImanes');
@@ -432,6 +504,12 @@
     function edit(i) {
         currentSlot = i;
         document.getElementById('editorModal').style.display = 'flex';
+
+        // Resetear acordeones al abrir
+        document.querySelectorAll('.accordion-item').forEach(i => {
+            i.classList.remove('active');
+            i.querySelector('.accordion-content').style.maxHeight = null;
+        });
 
         if(slots[i]) {
             imgObj.src = slots[i].raw;
@@ -533,6 +611,11 @@
                 updateControls();
                 updateFilterThumbnails(imgObj.src);
                 draw();
+
+                // Abrir el primer acordeón (Estilo) automáticamente al cargar foto
+                // para guiar al usuario
+                const firstAcc = document.querySelector('.accordion-header');
+                if(firstAcc) toggleAccordion(firstAcc);
             };
             imgObj.src = ev.target.result;
         };
