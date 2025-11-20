@@ -3,18 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <!-- SEGURIDAD: Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="
-            default-src 'self';
-            script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://api.emailjs.com;
-            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-            font-src 'self' https://fonts.gstatic.com;
-            img-src 'self' data: blob: https://res.cloudinary.com;
-            connect-src 'self' https://api.emailjs.com https://api.cloudinary.com;
-            frame-src 'self';
-        ">
-
     <title>Diseña tus Imanes | Estudio Creativo</title>
 
     <!-- Fuentes -->
@@ -81,11 +69,7 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
         label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; display: block; }
-
-        input, select, textarea {
-            width: 100%; padding: 10px; border: 1px solid var(--border);
-            border-radius: 8px; font-family: inherit; font-size: 1rem;
-        }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; }
         .input-error { border-color: var(--error) !important; background-color: #FEF2F2; }
 
         /* LEGAL */
@@ -93,7 +77,6 @@
         .legal-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: #4B5563; }
         .legal-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); cursor: pointer; }
         .legal-item a { color: var(--primary); text-decoration: none; font-weight: 600; }
-        .legal-item a:hover { text-decoration: underline; }
 
         /* --- MODAL EDITOR --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -118,57 +101,21 @@
 
         #uploadOverlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(20,20,20,0.9);
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            cursor: pointer; z-index: 10;
+            background: rgba(20,20,20,0.9); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer; z-index: 10;
             color: white; text-align: center;
         }
         #uploadOverlay span { font-size: 3rem; display: block; margin-bottom: 10px; }
 
-        /* --- ACORDEON (NUEVO CSS) --- */
-        .accordion-item {
-            border-bottom: 1px solid #f3f4f6;
-            margin-bottom: 5px;
-        }
-
-        .accordion-header {
-            padding: 15px 5px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #4B5563;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            transition: color 0.3s;
-        }
-
+        /* --- ACORDEÓN --- */
+        .accordion-item { border-bottom: 1px solid #f3f4f6; margin-bottom: 5px; }
+        .accordion-header { padding: 15px 5px; cursor: pointer; font-size: 0.95rem; font-weight: 700; color: #4B5563; display: flex; justify-content: space-between; align-items: center; background: white; transition: color 0.3s; }
         .accordion-header:hover { color: var(--primary); }
-
-        .accordion-header::after {
-            content: '+';
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #9CA3AF;
-            transition: transform 0.3s;
-        }
-
+        .accordion-header::after { content: '+'; font-size: 1.2rem; font-weight: bold; color: #9CA3AF; transition: transform 0.3s; }
         .accordion-item.active .accordion-header { color: var(--primary); }
         .accordion-item.active .accordion-header::after { content: '−'; color: var(--primary); }
-
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s ease;
-            padding: 0 5px;
-        }
-
-        .accordion-item.active .accordion-content {
-            padding-bottom: 20px;
-            /* max-height se asigna via JS */
-        }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease; padding: 0 5px; }
+        .accordion-item.active .accordion-content { padding-bottom: 20px; }
 
         /* SLIDERS */
         .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -313,7 +260,7 @@
     </div>
 </div>
 
-<!-- MODAL EDITOR CON ACORDEÓN -->
+<!-- MODAL EDITOR -->
 <div class="modal" id="editorModal">
     <div class="editor-container">
         <div style="padding:15px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
@@ -380,7 +327,7 @@
                 <div class="accordion-item">
                     <div class="accordion-header" onclick="toggleAccordion(this)">Ajustes Imagen</div>
                     <div class="accordion-content">
-                        <span class="slider-label">Zoom (1.0x - 3.0x)</span>
+                        <span class="slider-label">Zoom</span>
                         <div class="slider-row">
                             <div class="slider-icon">➖</div>
                             <input type="range" id="zoomControl" min="1" max="3" step="0.05" value="1">
@@ -476,22 +423,16 @@
 
     window.onload = function() {
         renderGrid();
-        // Inicializar acordeón: abrir el primero por defecto?
-        // No, por defecto cerrados según requerimiento.
     };
 
-    // --- LÓGICA ACORDEÓN ---
+    // --- ACORDEÓN LOGIC ---
     window.toggleAccordion = function(header) {
         const item = header.parentElement;
         const isActive = item.classList.contains('active');
-
-        // 1. Cerrar todos
         document.querySelectorAll('.accordion-item').forEach(i => {
             i.classList.remove('active');
             i.querySelector('.accordion-content').style.maxHeight = null;
         });
-
-        // 2. Abrir el clickeado si no estaba abierto
         if (!isActive) {
             item.classList.add('active');
             const content = item.querySelector('.accordion-content');
@@ -506,22 +447,8 @@
             const div = document.createElement('div');
             div.className = `iman-slot ${s ? 'filled' : ''}`;
             div.onclick = () => edit(i);
-            // if(s) div.innerHTML = `<img src="${s.preview}">`;
-            // else div.innerHTML = `<span style="font-size:2rem;color:#ccc">+</span>`;
-
-            // MEJORA SEGURIDAD: Usar createElement en lugar de innerHTML para la imagen
-            if(s) {
-                const img = document.createElement('img');
-                img.src = s.preview;
-                img.alt = `Imán ${i+1}`;
-                div.appendChild(img);
-            } else {
-                const span = document.createElement('span');
-                span.style.fontSize = '2rem';
-                span.style.color = '#ccc';
-                span.textContent = '+';
-                div.appendChild(span);
-            }
+            if(s) div.innerHTML = `<img src="${s.preview}">`;
+            else div.innerHTML = `<span style="font-size:2rem;color:#ccc">+</span>`;
             el.appendChild(div);
         });
         checkNext();
@@ -531,7 +458,7 @@
         currentSlot = i;
         document.getElementById('editorModal').style.display = 'flex';
 
-        // Resetear acordeones al abrir
+        // Reset Acordeón
         document.querySelectorAll('.accordion-item').forEach(i => {
             i.classList.remove('active');
             i.querySelector('.accordion-content').style.maxHeight = null;
@@ -638,8 +565,6 @@
                 updateFilterThumbnails(imgObj.src);
                 draw();
 
-                // Abrir el primer acordeón (Estilo) automáticamente al cargar foto
-                // para guiar al usuario
                 const firstAcc = document.querySelector('.accordion-header');
                 if(firstAcc) toggleAccordion(firstAcc);
             };
@@ -679,11 +604,9 @@
 
     function handleStart(e) {
         if (document.getElementById('uploadOverlay').style.display !== 'none') return;
-
         if(e.type==='touchstart') e.preventDefault();
         const p = getPos(e);
         state.lastX = p.x; state.lastY = p.y;
-
         const distTxt = Math.hypot(p.x - state.txtX, p.y - state.txtY);
         if(state.txt && distTxt < 50) state.dragItem = 'txt';
         else state.dragItem = 'img';
@@ -692,7 +615,6 @@
     function move(e) {
         if(!state.dragItem) return;
         if(e.type==='touchmove') e.preventDefault();
-
         const p = getPos(e);
         const dx = p.x - state.lastX;
         const dy = p.y - state.lastY;
@@ -723,7 +645,9 @@
     window.addEventListener('touchend', ()=>state.dragItem=null);
 
     window.saveSlot = () => {
-        if(!imgObj.src || imgObj.src === "") return alert("⚠️ Debes cargar una foto antes de guardar");
+        if(!imgObj.src || imgObj.src === "" || imgObj.naturalWidth === 0) {
+            return alert("⚠️ Por favor carga una foto antes de guardar");
+        }
         const data = cvs.toDataURL('image/jpeg', 0.9);
         slots[currentSlot] = { preview: data, raw: imgObj.src, state: {...state} };
         document.getElementById('editorModal').style.display='none';
@@ -763,18 +687,9 @@
     };
     window.prevStep = (n) => window.nextStep(n);
 
-    // --- FUNCIONES DE SEGURIDAD ---
-    function sanitizeInput(str) {
-        if (!str) return "";
-        const temp = document.createElement('div');
-        temp.textContent = str;
-        return temp.innerHTML;
-    }
-
     window.validateAndNext = (n) => {
         const requiredIds = ['ship_name', 'ship_surname', 'ship_id', 'ship_phone', 'ship_email', 'ship_street', 'ship_number', 'ship_intersection'];
         let valid = true;
-
         requiredIds.forEach(id => {
             const el = document.getElementById(id);
             if(el && !el.value.trim()) {
@@ -784,7 +699,6 @@
                 el.classList.remove('input-error');
             }
         });
-
         if(valid) window.nextStep(n);
     };
 
@@ -820,17 +734,29 @@
             const urls = await Promise.all(slots.map(s => upload(s.preview)));
             if(urls.some(u => !u)) throw new Error("Error subiendo imágenes");
 
-            // Sanitizamos los datos antes de enviarlos
-            const getSafeVal = (id) => sanitizeInput(document.getElementById(id).value);
-
             const fullAddress = `${document.getElementById('ship_street').value} #${document.getElementById('ship_number').value} y ${document.getElementById('ship_intersection').value}. (${document.getElementById('ship_comments').value})`;
 
             const p = {
-                cust_name: getSafeVal('ship_name'),
-                cust_surname: getSafeVal('ship_surname'),
-                cust_phone: getSafeVal('ship_phone'),
+                cust_name: document.getElementById('ship_name').value,
+                cust_surname: document.getElementById('ship_surname').value,
+                cust_phone: document.getElementById('ship_phone').value,
                 cust_address: fullAddress,
-                total_price: "$" + 19.00,
+                ship_name: document.getElementById('ship_name').value,
+                ship_surname: document.getElementById('ship_surname').value,
+                ship_id: document.getElementById('ship_id').value,
+                ship_phone: document.getElementById('ship_phone').value,
+                ship_email: document.getElementById('ship_email').value,
+                ship_full_address: fullAddress,
+                ship_comments: document.getElementById('ship_comments').value || "Ninguno",
+
+                bill_name: document.getElementById('bill_name').value,
+                bill_surname: document.getElementById('bill_surname').value,
+                bill_id: document.getElementById('bill_id').value,
+                bill_phone: document.getElementById('bill_phone').value,
+                bill_email: document.getElementById('bill_email').value,
+                bill_address: document.getElementById('bill_address').value,
+
+                total_price: "$19.00",
                 img1_link: urls[0], img2_link: urls[1], img3_link: urls[2], img4_link: urls[3],
                 img5_link: urls[4], img6_link: urls[5], img7_link: urls[6], img8_link: urls[7]
             };
@@ -842,7 +768,8 @@
             document.getElementById('successSection').style.display = 'block';
 
             const wa = `Hola, soy ${p.cust_name}. Ya realicé mi pedido de 8 imanes. Las imágenes fueron enviadas a su sistema. Quedo atento para el pago.`;
-            document.getElementById('finalWhatsappLink').href = `https://api.whatsapp.com/send?phone=${SHOP_WA}&text=${encodeURIComponent(wa)}`;
+            const cleanPhone = SHOP_WA.replace('+', '');
+            document.getElementById('finalWhatsappLink').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(wa)}`;
 
         } catch(e) {
             document.getElementById('loader').style.display = 'none';
