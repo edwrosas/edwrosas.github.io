@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Diseña tus Imanes | Estudio Creativo</title>
+
+    <!-- SEGURIDAD: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://api.emailjs.com;
+            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+            font-src 'self' https://fonts.gstatic.com;
+            img-src 'self' data: blob: https://res.cloudinary.com;
+            connect-src 'self' https://api.emailjs.com https://api.cloudinary.com;
+            frame-src 'self';
+    ">
+    <title>Imanarte</title>
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -178,7 +189,7 @@
     </div>
 
     <div id="mainWrapper">
-        <h2>Diseña tus Imanes 5x5</h2>
+        <h2>Diseña tus Foto Imanes 5x5</h2>
 
         <div class="stepper-wrapper">
             <div class="stepper-item active" id="st1"><div class="step-counter">1</div><small>Diseño</small></div>
@@ -447,8 +458,21 @@
             const div = document.createElement('div');
             div.className = `iman-slot ${s ? 'filled' : ''}`;
             div.onclick = () => edit(i);
-            if(s) div.innerHTML = `<img src="${s.preview}">`;
-            else div.innerHTML = `<span style="font-size:2rem;color:#ccc">+</span>`;
+
+            // MEJORA SEGURIDAD: Usar createElement en lugar de innerHTML para la imagen
+            if(s) {
+                const img = document.createElement('img');
+                img.src = s.preview;
+                img.alt = `Imán ${i+1}`;
+                div.appendChild(img);
+            } else {
+                const span = document.createElement('span');
+                span.style.fontSize = '2rem';
+                span.style.color = '#ccc';
+                span.textContent = '+';
+                div.appendChild(span);
+            }
+
             el.appendChild(div);
         });
         checkNext();
@@ -726,29 +750,32 @@
     }
 
     window.processOrder = async () => {
+        // 1. Validaciones Legales
         if (!document.getElementById('chk_terms').checked) return alert("Debes aceptar los Términos y Condiciones");
         if (!document.getElementById('chk_data').checked) return alert("Debes aceptar el Tratamiento de Datos Personales");
 
+        // Mostrar loader
         document.getElementById('loader').style.display = 'flex';
-        try {
-            const urls = await Promise.all(slots.map(s => upload(s.preview)));
-            if(urls.some(u => !u)) throw new Error("Error subiendo imágenes");
 
+        try {
+            // 2. Subir imágenes a Cloudinary
+            const urls = await Promise.all(slots.map(s => upload(s.preview)));
+            if(urls.some(u => !u)) throw new Error("Error subiendo imágenes. Verifica tu conexión.");
+
+            // Preparar dirección completa
             const fullAddress = `${document.getElementById('ship_street').value} #${document.getElementById('ship_number').value} y ${document.getElementById('ship_intersection').value}. (${document.getElementById('ship_comments').value})`;
 
+            // 3. Datos para EmailJS
             const p = {
                 cust_name: document.getElementById('ship_name').value,
                 cust_surname: document.getElementById('ship_surname').value,
+                cust_id: document.getElementById('ship_id').value,
+                cust_email: document.getElementById('ship_email').value,
                 cust_phone: document.getElementById('ship_phone').value,
                 cust_address: fullAddress,
-                ship_name: document.getElementById('ship_name').value,
-                ship_surname: document.getElementById('ship_surname').value,
-                ship_id: document.getElementById('ship_id').value,
-                ship_phone: document.getElementById('ship_phone').value,
-                ship_email: document.getElementById('ship_email').value,
-                ship_full_address: fullAddress,
-                ship_comments: document.getElementById('ship_comments').value || "Ninguno",
+                cust_comments: document.getElementById('ship_comments').value,
 
+                // Datos Facturación
                 bill_name: document.getElementById('bill_name').value,
                 bill_surname: document.getElementById('bill_surname').value,
                 bill_id: document.getElementById('bill_id').value,
@@ -756,24 +783,42 @@
                 bill_email: document.getElementById('bill_email').value,
                 bill_address: document.getElementById('bill_address').value,
 
-                total_price: "$19.00",
+                total_price: "$17.25",
                 img1_link: urls[0], img2_link: urls[1], img3_link: urls[2], img4_link: urls[3],
                 img5_link: urls[4], img6_link: urls[5], img7_link: urls[6], img8_link: urls[7]
             };
 
+            // 4. Enviar Email
             await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, p);
 
+            // 5. Ocultar Loader y Mostrar Éxito
             document.getElementById('loader').style.display = 'none';
             document.getElementById('mainWrapper').style.display = 'none';
             document.getElementById('successSection').style.display = 'block';
 
-            const wa = `Hola, soy ${p.cust_name}. Ya realicé mi pedido de 8 imanes. Las imágenes fueron enviadas a su sistema. Quedo atento para el pago.`;
-            const cleanPhone = SHOP_WA.replace('+', '');
-            document.getElementById('finalWhatsappLink').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(wa)}`;
+            // 6. Generar Enlace WhatsApp (CORREGIDO PARA MÓVIL)
+            const wa = `Hola, soy ${p.cust_name}. Ya realicé mi pedido de 8 imanes. Las imágenes y datos fueron enviados a su sistema. Quedo atento para el pago.`;
+
+            // Limpieza agresiva del número: Solo deja dígitos (quita +, -, espacios)
+            const cleanPhone = SHOP_WA.replace(/\D/g, '');
+
+            // Usar el formato API completo que funciona mejor en Android/iOS
+            const urlWA = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(wa)}`;
+
+            // Asignar al botón
+            const btn = document.getElementById('finalWhatsappLink');
+            btn.href = urlWA;
+
+            // Forzar actualización del botón por si acaso
+            btn.onclick = function() {
+                window.open(urlWA, '_blank');
+                return false;
+            };
 
         } catch(e) {
             document.getElementById('loader').style.display = 'none';
-            alert("Error: " + e.message);
+            alert("Ocurrió un error: " + e.message);
+            console.error(e);
         }
     };
 </script>
