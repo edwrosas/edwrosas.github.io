@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- SEGURIDAD: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://api.emailjs.com;
+            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+            font-src 'self' https://fonts.gstatic.com;
+            img-src 'self' data: blob: https://res.cloudinary.com;
+            connect-src 'self' https://api.emailjs.com https://api.cloudinary.com;
+            frame-src 'self';
+    ">
+    <title>Imanarte</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+
+    <!-- SDK DE EMAILJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338ca;
+            --secondary: #10B981;
+            --bg-body: #F3F4F6;
+            --surface: #ffffff;
+            --text-main: #1F2937;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --error: #EF4444;
+        }
+
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); margin: 0; padding: 15px; color: var(--text-main); }
+
+        .container { max-width: 950px; margin: 0 auto; background: var(--surface); padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); min-height: 85vh; }
+
+        h2 { text-align: center; margin-bottom: 25px; color: #111827; }
+
+        /* STEPPER */
+        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; }
+        .stepper-wrapper::before { content: ''; position: absolute; top: 15px; left: 0; width: 100%; height: 3px; background: #E5E7EB; z-index: 0; }
+        .stepper-item { position: relative; z-index: 1; text-align: center; background: var(--surface); padding: 0 10px; }
+        .step-counter { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 3px solid #E5E7EB; color: #9CA3AF; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: 700; transition: 0.3s; }
+        .step-name { font-size: 0.75rem; font-weight: 600; color: #9CA3AF; }
+        .active .step-counter { border-color: var(--primary); background: var(--primary); color: white; transform: scale(1.1); }
+        .active .step-name { color: var(--primary); }
+        .completed .step-counter { background: var(--secondary); border-color: var(--secondary); color: white; }
+
+        /* SECCIONES */
+        .step-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .step-section.active { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+        /* GRID FOTOS */
+        .grid-imanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .iman-slot { aspect-ratio: 1/1; background: #F9FAFB; border: 2px dashed #D1D5DB; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; transition: 0.2s; }
+        .iman-slot:hover { border-color: var(--primary); background: #EEF2FF; }
+        .iman-slot.filled { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white; }
+        .iman-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* BOTONES */
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; width: 100%; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+        .nav-buttons { display: flex; gap: 10px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #E5E7EB; color: #374151; }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-fridge { background: #3b82f6; color: white; margin-bottom: 15px; width: auto; display: inline-flex; }
+        .btn-upload { background: #e0e7ff; color: var(--primary); border: 1px solid #c7d2fe; width: 100%; padding: 10px; font-size: 0.9rem; margin-top: 5px; display:none; }
+
+        /* FORMS */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; display: block; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; }
+        .input-error { border-color: var(--error) !important; background-color: #FEF2F2; }
+
+        /* LEGAL */
+        .legal-check-group { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
+        .legal-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: #4B5563; }
+        .legal-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); cursor: pointer; }
+        .legal-item a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+        /* --- MODAL EDITOR --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .editor-container { background: white; width: 95%; max-width: 500px; border-radius: 16px; max-height: 95vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        @media (min-width: 800px) {
+            .editor-container { max-width: 900px; height: 85vh; }
+            .editor-body { display: grid; grid-template-columns: 320px 1fr; gap: 30px; padding: 25px; overflow: hidden; flex: 1; }
+            .panel-canvas { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+            .panel-controls { overflow-y: auto; padding-right: 10px; height: 100%; }
+        }
+        @media (max-width: 799px) { .editor-body { padding: 15px; overflow-y: auto; flex: 1; } }
+
+        .canvas-wrapper {
+            width: 280px; height: 280px; margin: 0 auto 5px;
+            border: 4px solid #333; border-radius: 4px;
+            background: #111; position: relative; overflow: hidden;
+            touch-action: none; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        canvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
+        #uploadOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(20,20,20,0.9); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer; z-index: 10;
+            color: white; text-align: center;
+        }
+        #uploadOverlay span { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+        /* --- ACORDEÓN --- */
+        .accordion-item { border-bottom: 1px solid #f3f4f6; margin-bottom: 5px; }
+        .accordion-header { padding: 15px 5px; cursor: pointer; font-size: 0.95rem; font-weight: 700; color: #4B5563; display: flex; justify-content: space-between; align-items: center; background: white; transition: color 0.3s; }
+        .accordion-header:hover { color: var(--primary); }
+        .accordion-header::after { content: '+'; font-size: 1.2rem; font-weight: bold; color: #9CA3AF; transition: transform 0.3s; }
+        .accordion-item.active .accordion-header { color: var(--primary); }
+        .accordion-item.active .accordion-header::after { content: '−'; color: var(--primary); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease; padding: 0 5px; }
+        .accordion-item.active .accordion-content { padding-bottom: 20px; }
+
+        /* SLIDERS */
+        .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .slider-icon { font-size: 1.2rem; color: #6b7280; width: 25px; text-align: center; font-weight: bold; }
+        .slider-label { font-size: 0.8rem; color:#666; margin-bottom: 2px; display:block;}
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 30px; cursor: pointer; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #E5E7EB; border-radius: 10px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--primary); margin-top: -7px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        /* FILTROS GRID */
+        .filters-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; width: 100%; }
+        .filter-btn { height: 90px; border: 2px solid #eee; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; background: #fff; overflow: hidden; transition: 0.2s; }
+        .filter-thumb { width: 100%; height: 65px; object-fit: cover; background: #ddd; }
+        .filter-name { height: 25px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: #666; }
+        .filter-btn.active { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .filter-btn.active .filter-name { background: #eef2ff; color: var(--primary); }
+
+        .polaroid-toggle { display: flex; align-items: center; justify-content: space-between; background: #f0fdf4; padding: 10px; border-radius: 8px; border: 1px solid #bbf7d0; cursor: pointer; margin-bottom: 20px; }
+        .polaroid-check { width: 20px; height: 20px; accent-color: var(--secondary); }
+
+        /* FOOTER */
+        .editor-footer { padding: 20px; background: #ffffff; border-top: 1px solid #eee; display: flex; gap: 15px; justify-content: space-between; }
+        .editor-footer .btn { flex: 1; margin: 0; justify-content: center; }
+
+        /* SUCCESS */
+        #successSection { display: none; text-align: center; padding: 40px 0; }
+        .btn-whatsapp { background-color: #25D366; color: white; font-size: 1.1rem; padding: 15px 30px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); transition: transform 0.2s; margin-top: 20px; }
+
+        /* REFRI */
+        .fridge-bg { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); width: 320px; height: 500px; border-radius: 20px; border: 8px solid #94a3b8; position: relative; margin: 0 auto; box-shadow: inset 10px 0 20px rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-wrap: wrap; align-content: flex-start; padding: 20px; gap: 10px; overflow: hidden; }
+        .fridge-handle { position: absolute; left: 10px; top: 50px; bottom: 50px; width: 10px; background: linear-gradient(to right, #cbd5e1, #fff, #94a3b8); border-radius: 5px; opacity: 0.6; }
+        .fridge-magnet { width: 80px; height: 80px; box-shadow: 2px 4px 8px rgba(0,0,0,0.4); transform: rotate(-2deg); border: 1px solid white; transition: 0.3s; background: white; object-fit: cover; }
+
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } .editor-footer { flex-direction: row; } }
+    </style>
+</head>
+<body>
+
+<!-- Preload Fonts -->
+<div style="opacity:0;pointer-events:none;position:absolute;">
+    <span style="font-family:'Great Vibes'">.</span><span style="font-family:'Pacifico'">.</span><span style="font-family:'Fredoka'">.</span>
+</div>
+
+<div class="loader-overlay" id="loader" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.9);z-index:200;justify-content:center;align-items:center;flex-direction:column;">
+    <div style="width:40px;height:40px;border:4px solid #eee;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;"></div>
+    <p style="margin-top:15px;color:#666">Procesando...</p>
+</div>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+<div class="container">
+
+    <!-- SUCCESS SCREEN -->
+    <div id="successSection">
+        <div style="font-size:4rem;margin-bottom:10px;">🎉</div>
+        <h2 style="color:var(--secondary)">¡Pedido Listo!</h2>
+        <p>Las imágenes se enviaron correctamente.</p>
+        <a href="#" id="finalWhatsappLink" class="btn-whatsapp" target="_blank">
+            Abrir WhatsApp y Pagar
+        </a>
+    </div>
+
+    <div id="mainWrapper">
+        <h2>Diseña tus Foto Imanes 5x5</h2>
+
+        <div class="stepper-wrapper">
+            <div class="stepper-item active" id="st1"><div class="step-counter">1</div><small>Diseño</small></div>
+            <div class="stepper-item" id="st2"><div class="step-counter">2</div><small>Entrega</small></div>
+            <div class="stepper-item" id="st3"><div class="step-counter">3</div><small>Pago</small></div>
+        </div>
+
+        <!-- PASO 1 -->
+        <div id="step-1" class="step-section active">
+            <div class="alert">🎨 Toca los cuadros para editar.</div>
+
+            <div class="grid-imanes" id="gridImanes"></div>
+
+            <div style="text-align:center; margin-bottom:20px;">
+                <button class="btn btn-fridge" onclick="openFridgePreview()">❄️ Ver en la Refri</button>
+            </div>
+
+            <div class="nav-buttons">
+                <div></div>
+                <button class="btn btn-primary" id="btnNext1" onclick="nextStep(2)" disabled style="width:auto">Siguiente ➜</button>
+            </div>
+        </div>
+
+        <!-- PASO 2: DATOS DE ENTREGA -->
+        <div id="step-2" class="step-section">
+            <h3>Datos de Entrega</h3>
+            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">* Campos obligatorios</p>
+            <div class="form-grid">
+                <input type="text" id="ship_name" placeholder="Nombres *">
+                <input type="text" id="ship_surname" placeholder="Apellidos *">
+                <input type="text" id="ship_id" placeholder="Identificación *">
+                <input type="tel" id="ship_phone" placeholder="Celular *">
+                <input type="email" id="ship_email" class="full-width" placeholder="Email *">
+
+                <input type="text" id="ship_street" class="full-width" placeholder="Calle Principal *">
+                <input type="text" id="ship_number" placeholder="Número de casa/edificio *">
+                <input type="text" id="ship_intersection" placeholder="Intersección (Calle transversal) *">
+
+                <textarea id="ship_comments" class="full-width" rows="2" placeholder="Referencia / Comentarios (Opcional)"></textarea>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(1)">Atrás</button>
+                <button class="btn btn-primary" onclick="validateAndNext(3)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div id="step-3" class="step-section">
+            <h3>Confirmación</h3>
+            <label style="display:flex;align-items:center;gap:10px;background:#f9fafb;padding:10px;border-radius:8px;margin-bottom:20px;">
+                <input type="checkbox" id="same_data" onchange="copyData()" style="width:20px"> Usar mismos datos factura
+            </label>
+            <div class="form-grid">
+                <input type="text" id="bill_name" placeholder="Nombres">
+                <input type="text" id="bill_surname" placeholder="Apellidos">
+                <input type="text" id="bill_id" placeholder="Identificación">
+                <input type="tel" id="bill_phone" placeholder="Celular">
+                <input type="email" id="bill_email" class="full-width" placeholder="Email">
+                <input type="text" id="bill_address" class="full-width" placeholder="Dirección completa">
+            </div>
+
+            <div class="legal-check-group">
+                <label class="legal-item">
+                    <input type="checkbox" id="chk_terms">
+                    <span>He leído y acepto los <a href="#" id="link_terms" target="_blank">Términos y Condiciones</a>.</span>
+                </label>
+
+                <label class="legal-item">
+                    <input type="checkbox" id="chk_data">
+                    <span>Acepto la Política de <a href="#" id="link_data" target="_blank">Tratamiento de Datos Personales</a>.</span>
+                </label>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(2)">Atrás</button>
+                <button class="btn btn-success" onclick="processOrder()">Finalizar Pedido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITOR -->
+<div class="modal" id="editorModal">
+    <div class="editor-container">
+        <div style="padding:15px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="margin:0">Editar Imán</h3>
+            <button onclick="closeEditor()" style="background:none;border:none;font-size:1.5rem;">&times;</button>
+        </div>
+
+        <div class="editor-body">
+            <div class="panel-canvas">
+                <div class="canvas-wrapper">
+                    <canvas id="editorCanvas" width="300" height="300"></canvas>
+                    <div id="uploadOverlay" onclick="document.getElementById('imageUpload').click()">
+                        <span>📷</span>
+                        <p>Toca para subir</p>
+                    </div>
+                </div>
+                <p style="text-align:center;font-size:0.75rem;color:#666;margin-bottom:10px;">👆 Arrastra la foto para mover</p>
+                <input type="file" id="imageUpload" accept="image/*" style="display:none">
+                <button class="btn btn-upload" id="changePhotoBtn" onclick="document.getElementById('imageUpload').click()">
+                    📂 Cambiar Foto
+                </button>
+            </div>
+
+            <div class="panel-controls">
+
+                <!-- ACORDEÓN 1: ESTILO -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Estilo</div>
+                    <div class="accordion-content">
+                        <label class="polaroid-toggle">
+                            <span style="display:flex;align-items:center;gap:5px;">📸 Modo Polaroid</span>
+                            <input type="checkbox" id="polaroidCheck" class="polaroid-check">
+                        </label>
+                        <div class="filters-scroll">
+                            <div class="filter-btn active" onclick="setFilter('none', this)">
+                                <img src="" class="filter-thumb" style="filter: none">
+                                <span class="filter-name">Normal</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('grayscale(100%)', this)">
+                                <img src="" class="filter-thumb" style="filter: grayscale(100%)">
+                                <span class="filter-name">B&N</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('sepia(100%)', this)">
+                                <img src="" class="filter-thumb" style="filter: sepia(100%)">
+                                <span class="filter-name">Sepia</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('contrast(150%)', this)">
+                                <img src="" class="filter-thumb" style="filter: contrast(150%)">
+                                <span class="filter-name">Alto</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('brightness(110%) saturate(120%)', this)">
+                                <img src="" class="filter-thumb" style="filter: brightness(110%) saturate(120%)">
+                                <span class="filter-name">Vivo</span>
+                            </div>
+                            <div class="filter-btn" onclick="setFilter('saturate(0.5)', this)">
+                                <img src="" class="filter-thumb" style="filter: saturate(0.5)">
+                                <span class="filter-name">Suave</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN 2: AJUSTES IMAGEN -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Ajustes Imagen</div>
+                    <div class="accordion-content">
+                        <span class="slider-label">Zoom</span>
+                        <div class="slider-row">
+                            <div class="slider-icon">➖</div>
+                            <input type="range" id="zoomControl" min="1" max="3" step="0.05" value="1">
+                            <div class="slider-icon">➕</div>
+                        </div>
+
+                        <span class="slider-label">Rotación</span>
+                        <div class="slider-row">
+                            <div class="slider-icon">↺</div>
+                            <input type="range" id="rotateControl" min="-180" max="180" step="1" value="0">
+                            <div class="slider-icon">↻</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN 3: TEXTO -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Texto</div>
+                    <div class="accordion-content">
+                        <input type="text" id="textInput" placeholder="Escribe algo..." style="margin-bottom:10px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                            <select id="fontFamily">
+                                <option value="Arial">Arial</option>
+                                <option value="'Great Vibes', cursive">Script</option>
+                                <option value="'Pacifico', cursive">Hand</option>
+                                <option value="'Fredoka', sans-serif">Round</option>
+                                <option value="Impact">Bold</option>
+                            </select>
+                            <input type="color" id="fontColor" value="#ffffff" style="height:40px;padding:0;">
+                        </div>
+                        <span class="slider-label">Tamaño Texto</span>
+                        <div class="slider-row">
+                            <div class="slider-icon" style="font-size:12px; padding-top:5px;">A</div>
+                            <input type="range" id="fontSize" min="10" max="80" value="30">
+                            <div class="slider-icon" style="font-size:22px;">A</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="editor-footer">
+            <button class="btn" style="background:#f3f4f6; color:#4b5563; border:1px solid #e5e7eb;" onclick="closeEditor()">Cancelar</button>
+            <button class="btn btn-success" onclick="saveSlot()">Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REFRI -->
+<div class="modal" id="fridgeModal">
+    <div style="position:relative;">
+        <button onclick="document.getElementById('fridgeModal').style.display='none'" style="position:absolute;top:-40px;right:0;color:white;background:none;border:none;font-size:2rem;cursor:pointer;">&times;</button>
+        <div class="fridge-bg" id="fridgeContent">
+            <div class="fridge-handle"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // CONFIGURACIÓN
+    // ============================================================
+    const CONFIG_PDFS = {
+        terms: "https://drive.google.com/file/d/1Gf-4_21Xtval0tYE8D9cTYoH7t8L09qR/view?usp=drive_link", // Poner URL real
+        data: "https://drive.google.com/file/d/12chapsZ4yIZH_5Bk11pGnGJ4rYYaxubB/view?usp=drive_link"         // Poner URL real
+    };
+
+    const EMAILJS_KEY = "ain0jDyCXgCAFURqg";
+    const EMAILJS_SERVICE = "service_gz97y8p";
+    const EMAILJS_TEMPLATE = "template_k2u0fxd";
+    const CLOUD_NAME = "dwtdqotop";
+    const CLOUD_PRESET = "imagen";
+    const SHOP_WA = "593986805369";
+
+    // ============================================================
+
+    (function(){ emailjs.init(EMAILJS_KEY); })();
+    document.getElementById('link_terms').href = CONFIG_PDFS.terms;
+    document.getElementById('link_data').href = CONFIG_PDFS.data;
+
+    let slots = new Array(8).fill(null);
+    let currentSlot = -1;
+    let imgObj = new Image();
+    let cvs = document.getElementById('editorCanvas');
+    let ctx = cvs.getContext('2d');
+
+    let state = {
+        x:0, y:0, baseScale:1, zoomLevel:1, rot:0,
+        txt:"", txtX:150, txtY:250, font:"Arial", size:30, color:"#fff",
+        filter: "none", isPolaroid: false, dragItem: null, lastX:0, lastY:0
+    };
+
+    window.onload = function() {
+        renderGrid();
+    };
+
+    // --- ACORDEÓN LOGIC ---
+    window.toggleAccordion = function(header) {
+        const item = header.parentElement;
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.accordion-item').forEach(i => {
+            i.classList.remove('active');
+            i.querySelector('.accordion-content').style.maxHeight = null;
+        });
+        if (!isActive) {
+            item.classList.add('active');
+            const content = item.querySelector('.accordion-content');
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    };
+
+    function renderGrid() {
+        const el = document.getElementById('gridImanes');
+        el.innerHTML = '';
+        slots.forEach((s, i) => {
+            const div = document.createElement('div');
+            div.className = `iman-slot ${s ? 'filled' : ''}`;
+            div.onclick = () => edit(i);
+
+            // MEJORA SEGURIDAD: Usar createElement en lugar de innerHTML para la imagen
+            if(s) {
+                const img = document.createElement('img');
+                img.src = s.preview;
+                img.alt = `Imán ${i+1}`;
+                div.appendChild(img);
+            } else {
+                const span = document.createElement('span');
+                span.style.fontSize = '2rem';
+                span.style.color = '#ccc';
+                span.textContent = '+';
+                div.appendChild(span);
+            }
+
+            el.appendChild(div);
+        });
+        checkNext();
+    }
+
+    function edit(i) {
+        currentSlot = i;
+        document.getElementById('editorModal').style.display = 'flex';
+
+        // Reset Acordeón
+        document.querySelectorAll('.accordion-item').forEach(i => {
+            i.classList.remove('active');
+            i.querySelector('.accordion-content').style.maxHeight = null;
+        });
+
+        if(slots[i]) {
+            imgObj.src = slots[i].raw;
+            state = {...slots[i].state};
+            document.getElementById('changePhotoBtn').style.display = 'inline-flex';
+            document.getElementById('uploadOverlay').style.display = 'none';
+            updateControls();
+            updateFilterThumbnails(imgObj.src);
+        } else {
+            resetState();
+            imgObj.src = "";
+            document.getElementById('changePhotoBtn').style.display = 'none';
+            document.getElementById('uploadOverlay').style.display = 'flex';
+            ctx.clearRect(0,0,300,300);
+            ctx.fillStyle="#111"; ctx.fillRect(0,0,300,300);
+            updateFilterThumbnails("");
+        }
+    }
+
+    function updateFilterThumbnails(src) {
+        const thumbs = document.querySelectorAll('.filter-thumb');
+        const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='12' fill='%23999' text-anchor='middle' dy='.3em'%3ESin Foto%3C/text%3E%3C/svg%3E";
+        thumbs.forEach(img => img.src = src && src !== "" ? src : placeholder);
+    }
+
+    function resetState() {
+        state = { x:0, y:0, baseScale:1, zoomLevel:1, rot:0, txt:"", txtX:150, txtY:260, font:"Arial", size:30, color:"#ffffff", filter: "none", isPolaroid: false, dragItem: null, lastX:0, lastY:0 };
+    }
+
+    function updateControls() {
+        document.getElementById('zoomControl').value = state.zoomLevel;
+        document.getElementById('rotateControl').value = state.rot;
+        document.getElementById('textInput').value = state.txt;
+        document.getElementById('fontFamily').value = state.font;
+        document.getElementById('fontSize').value = state.size;
+        document.getElementById('fontColor').value = state.color;
+        document.getElementById('polaroidCheck').checked = state.isPolaroid;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.getAttribute('onclick').includes(state.filter)) btn.classList.add('active');
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0,0,300,300);
+        ctx.fillStyle = state.isPolaroid ? "#ffffff" : "#000000";
+        ctx.fillRect(0,0,300,300);
+
+        if(imgObj.src) {
+            ctx.save();
+            ctx.filter = state.filter;
+            ctx.translate(150, 150);
+            ctx.rotate(state.rot * Math.PI/180);
+            const effectiveScale = state.baseScale * state.zoomLevel;
+            ctx.scale(effectiveScale, effectiveScale);
+            ctx.translate(-150, -150);
+
+            if(state.isPolaroid) {
+                ctx.drawImage(imgObj, state.x, state.y);
+                ctx.restore();
+                ctx.save();
+                ctx.fillStyle = "white";
+                ctx.fillRect(0,0, 20, 300);
+                ctx.fillRect(280,0, 20, 300);
+                ctx.fillRect(0,0, 300, 20);
+                ctx.fillRect(0, 240, 300, 60);
+            } else {
+                ctx.drawImage(imgObj, state.x, state.y);
+                ctx.restore();
+            }
+        }
+
+        if(state.txt) {
+            ctx.save();
+            ctx.font = `${state.size}px ${state.font}`;
+            ctx.fillStyle = state.color;
+            if(!state.isPolaroid) { ctx.shadowColor="black"; ctx.shadowBlur=4; }
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillText(state.txt, state.txtX, state.txtY);
+            ctx.restore();
+        }
+    }
+
+    document.getElementById('imageUpload').onchange = function(e) {
+        const f = e.target.files[0];
+        if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => {
+            imgObj = new Image();
+            imgObj.onload = () => {
+                const ratio = Math.max(300/imgObj.width, 300/imgObj.height) * 1.02;
+                state.baseScale = ratio;
+                state.zoomLevel = 1;
+                state.rot = 0;
+                state.x = (300 - imgObj.width)/2;
+                state.y = (300 - imgObj.height)/2;
+                document.getElementById('changePhotoBtn').style.display = 'inline-flex';
+                document.getElementById('uploadOverlay').style.display = 'none';
+                updateControls();
+                updateFilterThumbnails(imgObj.src);
+                draw();
+
+                const firstAcc = document.querySelector('.accordion-header');
+                if(firstAcc) toggleAccordion(firstAcc);
+            };
+            imgObj.src = ev.target.result;
+        };
+        r.readAsDataURL(f);
+    };
+
+    const inputs = ['zoomControl','rotateControl','textInput','fontSize','fontFamily','fontColor','polaroidCheck'];
+    inputs.forEach(id => {
+        document.getElementById(id).oninput = (e) => {
+            const val = e.target.value;
+            if(id==='zoomControl') state.zoomLevel = parseFloat(val);
+            if(id==='rotateControl') state.rot = parseInt(val);
+            if(id==='textInput') state.txt = val;
+            if(id==='fontSize') state.size = parseInt(val);
+            if(id==='fontFamily') state.font = val;
+            if(id==='fontColor') state.color = val;
+            if(id==='polaroidCheck') {
+                state.isPolaroid = e.target.checked;
+                if(state.isPolaroid) state.txtY = 270;
+            }
+            draw();
+        };
+    });
+
+    window.setFilter = (f, btn) => { state.filter = f; updateControls(); draw(); };
+
+    function getPos(e) {
+        const r = cvs.getBoundingClientRect();
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const scaleX = 300 / r.width;
+        const scaleY = 300 / r.height;
+        return { x: (x-r.left)*scaleX, y: (y-r.top)*scaleY };
+    }
+
+    function handleStart(e) {
+        if (document.getElementById('uploadOverlay').style.display !== 'none') return;
+        if(e.type==='touchstart') e.preventDefault();
+        const p = getPos(e);
+        state.lastX = p.x; state.lastY = p.y;
+        const distTxt = Math.hypot(p.x - state.txtX, p.y - state.txtY);
+        if(state.txt && distTxt < 50) state.dragItem = 'txt';
+        else state.dragItem = 'img';
+    }
+
+    function move(e) {
+        if(!state.dragItem) return;
+        if(e.type==='touchmove') e.preventDefault();
+        const p = getPos(e);
+        const dx = p.x - state.lastX;
+        const dy = p.y - state.lastY;
+
+        if(state.dragItem === 'txt') {
+            state.txtX += dx;
+            state.txtY += dy;
+        }
+        else {
+            const rad = state.rot * Math.PI / 180;
+            const sin = Math.sin(rad);
+            const cos = Math.cos(rad);
+            const effectiveScale = state.baseScale * state.zoomLevel;
+            state.x += (dx * cos + dy * sin) / effectiveScale;
+            state.y += (dy * cos - dx * sin) / effectiveScale;
+        }
+
+        state.lastX = p.x;
+        state.lastY = p.y;
+        draw();
+    }
+
+    cvs.addEventListener('mousedown', handleStart);
+    cvs.addEventListener('touchstart', handleStart, {passive:false});
+    cvs.addEventListener('mousemove', move);
+    cvs.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('mouseup', ()=>state.dragItem=null);
+    window.addEventListener('touchend', ()=>state.dragItem=null);
+
+    window.saveSlot = () => {
+        if(!imgObj.src || imgObj.src === "" || imgObj.naturalWidth === 0) {
+            return alert("⚠️ Por favor carga una foto antes de guardar");
+        }
+        const data = cvs.toDataURL('image/jpeg', 0.9);
+        slots[currentSlot] = { preview: data, raw: imgObj.src, state: {...state} };
+        document.getElementById('editorModal').style.display='none';
+        renderGrid();
+    };
+    window.closeEditor = () => document.getElementById('editorModal').style.display='none';
+
+    window.openFridgePreview = () => {
+        const c = document.getElementById('fridgeContent');
+        c.innerHTML = '<div class="fridge-handle"></div>';
+        slots.forEach(s => {
+            if(s) {
+                const img = document.createElement('img');
+                img.src = s.preview;
+                img.className = 'fridge-magnet';
+                c.appendChild(img);
+            }
+        });
+        document.getElementById('fridgeModal').style.display = 'flex';
+    };
+
+    window.checkNext = () => {
+        const n = slots.filter(x=>x).length;
+        const b = document.getElementById('btnNext1');
+        b.disabled = n!==8;
+        b.innerHTML = n===8 ? "Siguiente ➜" : `Faltan ${8-n}`;
+    };
+
+    window.nextStep = (n) => {
+        document.querySelectorAll('.step-section').forEach(d=>d.classList.remove('active'));
+        document.getElementById(`step-${n}`).classList.add('active');
+        document.querySelectorAll('.stepper-item').forEach((el,i) => {
+            el.classList.remove('active','completed');
+            if(i+1 === n) el.classList.add('active');
+            if(i+1 < n) el.classList.add('completed');
+        });
+    };
+    window.prevStep = (n) => window.nextStep(n);
+
+    window.validateAndNext = (n) => {
+        const requiredIds = ['ship_name', 'ship_surname', 'ship_id', 'ship_phone', 'ship_email', 'ship_street', 'ship_number', 'ship_intersection'];
+        let valid = true;
+        requiredIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el && !el.value.trim()) {
+                el.classList.add('input-error');
+                valid = false;
+            } else if (el) {
+                el.classList.remove('input-error');
+            }
+        });
+        if(valid) window.nextStep(n);
+    };
+
+    window.copyData = () => {
+        if(document.getElementById('same_data').checked) {
+            ['name','surname','id','phone','email'].forEach(k => {
+                document.getElementById(`bill_${k}`).value = document.getElementById(`ship_${k}`).value;
+            });
+            const street = document.getElementById('ship_street').value;
+            const num = document.getElementById('ship_number').value;
+            const inter = document.getElementById('ship_intersection').value;
+            document.getElementById('bill_address').value = `${street} #${num} y ${inter}`;
+        }
+    };
+
+    async function upload(b64) {
+        const fd = new FormData();
+        fd.append('file', b64);
+        fd.append('upload_preset', CLOUD_PRESET);
+        try {
+            const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST', body:fd});
+            const d = await r.json();
+            return d.secure_url;
+        } catch(e) { return null; }
+    }
+
+    window.processOrder = async () => {
+        // 1. Validaciones Legales
+        if (!document.getElementById('chk_terms').checked) return alert("Debes aceptar los Términos y Condiciones");
+        if (!document.getElementById('chk_data').checked) return alert("Debes aceptar el Tratamiento de Datos Personales");
+
+        // Mostrar loader
+        document.getElementById('loader').style.display = 'flex';
+
+        try {
+            // 2. Subir imágenes a Cloudinary
+            const urls = await Promise.all(slots.map(s => upload(s.preview)));
+            if(urls.some(u => !u)) throw new Error("Error subiendo imágenes. Verifica tu conexión.");
+
+            // Preparar dirección completa
+            const fullAddress = `${document.getElementById('ship_street').value} #${document.getElementById('ship_number').value} y ${document.getElementById('ship_intersection').value}. (${document.getElementById('ship_comments').value})`;
+
+            // 3. Datos para EmailJS
+            const p = {
+                cust_name: document.getElementById('ship_name').value,
+                cust_surname: document.getElementById('ship_surname').value,
+                cust_id: document.getElementById('ship_id').value,
+                cust_email: document.getElementById('ship_email').value,
+                cust_phone: document.getElementById('ship_phone').value,
+                cust_address: fullAddress,
+                cust_comments: document.getElementById('ship_comments').value,
+
+                // Datos Facturación
+                bill_name: document.getElementById('bill_name').value,
+                bill_surname: document.getElementById('bill_surname').value,
+                bill_id: document.getElementById('bill_id').value,
+                bill_phone: document.getElementById('bill_phone').value,
+                bill_email: document.getElementById('bill_email').value,
+                bill_address: document.getElementById('bill_address').value,
+
+                total_price: "$17.25",
+                img1_link: urls[0], img2_link: urls[1], img3_link: urls[2], img4_link: urls[3],
+                img5_link: urls[4], img6_link: urls[5], img7_link: urls[6], img8_link: urls[7]
+            };
+
+            // 4. Enviar Email
+            await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, p);
+
+            // 5. Ocultar Loader y Mostrar Éxito
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('mainWrapper').style.display = 'none';
+            document.getElementById('successSection').style.display = 'block';
+
+            // 6. Generar Enlace WhatsApp (CORREGIDO PARA MÓVIL)
+            const wa = `Hola, soy ${p.cust_name}. Ya realicé mi pedido de 8 imanes. Las imágenes y datos fueron enviados a su sistema. Quedo atento para el pago.`;
+
+            // Limpieza agresiva del número: Solo deja dígitos (quita +, -, espacios)
+            const cleanPhone = SHOP_WA.replace(/\D/g, '');
+
+            // Usar el formato API completo que funciona mejor en Android/iOS
+            const urlWA = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(wa)}`;
+
+            // Asignar al botón
+            const btn = document.getElementById('finalWhatsappLink');
+            btn.href = urlWA;
+
+            // Forzar actualización del botón por si acaso
+            btn.onclick = function() {
+                window.open(urlWA, '_blank');
+                return false;
+            };
+
+        } catch(e) {
+            document.getElementById('loader').style.display = 'none';
+            alert("Ocurrió un error: " + e.message);
+            console.error(e);
+        }
+    };
+</script>
+</body>
+</html>
